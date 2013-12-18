@@ -1,0 +1,241 @@
+
+<html>
+  <head>
+
+    <script src="//js.leapmotion.com/0.3.0-beta2/leap.min.js">  </script>
+
+    <script src="lib/three.js">                                 </script>
+    <script src="lib/stats.min.js">                             </script>
+    
+    <script src="lib/LeapPaddleControls.js">                    </script>
+    <script src="lib/LeapFlyControls.js">                       </script>
+    <script src="lib/LeapSpringControls.js">                    </script>
+    
+    <style>
+
+      body:{
+
+        font:Arial;
+        overflow:hidden;
+
+      }
+
+      #container{
+
+        background:#000;
+        position:absolute;
+        top:0px;
+        left:0px;
+
+      }
+
+      #stats{
+
+        position:absolute;
+        bottom:0px;
+        right:0px;
+
+      }
+
+
+      #switch{
+
+        position:absolute;
+
+        top:0px;
+        left:0px;
+        color:#fff;
+        z-index:1;
+
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+
+    <a id="switch" onclick="switchControls()">Switch Controls</a>
+
+    <div id="container"></div>
+
+
+    <script>
+
+
+      // SCENE SIZE
+      var SS = 1000;
+      
+      var clock, camera, scene;
+      var container, renderer, stats;
+      var activeControls , cameraController;
+
+      var controls = [];
+      var activeControl = 0;
+
+      // Geometry for particle system
+      var geometery , material;
+
+      
+
+      init();
+
+      function switchControls(){
+
+        activeControl ++;
+        if( activeControl == controls.length )
+          activeControl = 0;
+
+      }
+
+
+      function init(){
+
+        /*
+
+          SETTING UP SCENE
+
+        */
+
+        clock = new THREE.Clock();
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera( 50 , window.innerWidth / window.innerHeight , SS / 1000 , SS * 20 );
+        camera.position.z = SS;
+
+
+        /*
+
+          SETTING UP CONTROLS
+
+        */
+        leapController = new Leap.Controller({enableGestures:true});
+
+        // Create our Controls
+        paddleControls  = new THREE.LeapPaddleControls( camera , leapController );
+        controls.push( paddleControls );
+
+        springControls  = new THREE.LeapSpringControls( camera , leapController , scene );
+        controls.push( springControls );
+
+        flyControls  = new THREE.LeapFlyControls( camera , leapController );
+        controls.push( flyControls );
+
+
+
+        /*
+
+          SETTING UP STAR FIELD
+
+        */
+        geometry = new THREE.Geometry();
+
+        for( var i = 0 ; i < 10000; i++ ){
+
+          var vert = new THREE.Vector3();
+
+          vert.x = ( Math.random() - .5 ) * 10 * SS;
+          vert.y = ( Math.random() - .5 ) * 10 * SS;
+          vert.z = ( Math.random() - .5 ) * 10 * SS;
+
+          geometry.vertices.push( vert );
+
+        }
+
+        var material = new THREE.ParticleSystemMaterial({
+          size:10, 
+          color:0xc0ffee
+        });
+
+        var particles = new THREE.ParticleSystem( geometry , material );
+
+        scene.add( particles );
+
+
+
+        /*
+
+          SETTING UP RENDERER
+
+        */
+        container = document.getElementById( 'container' );
+        
+        renderer = new THREE.WebGLRenderer( { antialias: true, clearColor:0x000000 } );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        container.appendChild( renderer.domElement );
+
+
+        /*
+
+          SETTING UP STATS
+
+        */
+        stats = new Stats();
+        container.appendChild( stats.domElement );
+
+
+        // adding an event listener to change our event window
+        window.addEventListener( 'resize', onWindowResize, false );
+
+        // Get things rolling
+        BEGIN();
+
+      }
+
+
+      function BEGIN(){
+
+        //Add things to do when the app first starts here
+
+        animationLoop();
+        leapController.connect();
+
+      }
+
+       function animate(){
+
+        stats.update();
+        controls[activeControl].update();
+        renderer.render( scene , camera );
+
+
+      }   
+
+      function animationLoop() {
+
+        animate();
+        requestId = window.requestAnimationFrame(animationLoop);
+
+      }
+
+      
+      function stopAnimationLoop() {
+        
+        if (requestId) {
+          cancelAnimationFrame(requestId);
+          requestId = undefined;
+        }
+
+      }
+
+      
+      function onWindowResize() {
+
+        windowHalfX = window.innerWidth / 2;
+        windowHalfY = window.innerHeight / 2;
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+      }
+
+
+
+    </script>
+
+  </body>
+</html>
