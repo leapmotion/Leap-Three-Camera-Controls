@@ -129,28 +129,38 @@
           SETTING UP STAR FIELD
 
         */
-        geometry = new THREE.Geometry();
 
-        for( var i = 0 ; i < 10000; i++ ){
+        for( var i = 0; i < 5; i ++ ){
 
-          var vert = new THREE.Vector3();
+          geometry = new THREE.Geometry();
 
-          vert.x = ( Math.random() - .5 ) * 10 * SS;
-          vert.y = ( Math.random() - .5 ) * 10 * SS;
-          vert.z = ( Math.random() - .5 ) * 10 * SS;
+          for( var j = 0 ; j < 10000; j++ ){
 
-          geometry.vertices.push( vert );
+            var vert = new THREE.Vector3();
+
+            vert.x = ( Math.random() - .5 ) * 10 * SS;
+            vert.y = ( Math.random() - .5 ) * 10 * SS;
+            vert.z = ( Math.random() - .5 ) * 10 * SS;
+
+            geometry.vertices.push( vert );
+
+          }
+
+          var color = new THREE.Color();
+          color.r = i / 5 ;
+          color.g = ( 5 - i ) / 5 ;
+          color.b = 1;
+          
+          var material = new THREE.ParticleSystemMaterial({
+            size:40, 
+            color:color.getHex()
+          });
+
+          var particles = new THREE.ParticleSystem( geometry , material );
+
+          scene.add( particles );
 
         }
-
-        var material = new THREE.ParticleSystemMaterial({
-          size:10, 
-          color:0xc0ffee
-        });
-
-        var particles = new THREE.ParticleSystem( geometry , material );
-
-        scene.add( particles );
 
 
 
