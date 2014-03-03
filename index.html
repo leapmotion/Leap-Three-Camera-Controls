@@ -8,8 +8,8 @@
     <script src="lib/stats.min.js">                             </script>
     
     <script src="lib/LeapPaddleControls.js">                    </script>
-    <script src="lib/LeapFlyControls.js">                       </script>
     <script src="lib/LeapSpringControls.js">                    </script>
+    <script src="lib/LeapFlyControls.js">                       </script>
     
     <style>
 
@@ -113,16 +113,14 @@
         leapController = new Leap.Controller({enableGestures:true});
 
         // Create our Controls
-        paddleControls  = new THREE.LeapPaddleControls( camera , leapController );
+        var paddleControls  = new THREE.LeapPaddleControls( camera , leapController );
         controls.push( paddleControls );
 
-        springControls  = new THREE.LeapSpringControls( camera , leapController , scene );
+        var springControls  = new THREE.LeapSpringControls( camera , leapController , scene );
         controls.push( springControls );
 
-        flyControls  = new THREE.LeapFlyControls( camera , leapController );
+        var flyControls     = new THREE.LeapFlyControls( camera , leapController );
         controls.push( flyControls );
-
-
 
         /*
 
@@ -204,14 +202,14 @@
 
       }
 
-       function animate(){
+      function animate(){
 
         stats.update();
         controls[activeControl].update();
         renderer.render( scene , camera );
 
-
       }   
+
 
       function animationLoop() {
 
