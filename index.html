@@ -10,6 +10,7 @@
     <script src="lib/LeapPaddleControls.js">                    </script>
     <script src="lib/LeapSpringControls.js">                    </script>
     <script src="lib/LeapFlyControls.js">                       </script>
+    <script src="lib/LeapTrackballControls.js">                 </script>
     
     <style>
 
@@ -112,15 +113,21 @@
         */
         leapController = new Leap.Controller({enableGestures:true});
 
+        var c = camera;
+        var l = leapController
         // Create our Controls
-        var paddleControls  = new THREE.LeapPaddleControls( camera , leapController );
+        var paddleControls  = new THREE.LeapPaddleControls( c , l );
         controls.push( paddleControls );
 
-        var springControls  = new THREE.LeapSpringControls( camera , leapController , scene );
+
+        // the Spring controls require a scene to add the markers to!
+        var springControls  = new THREE.LeapSpringControls( c , l , scene );
         controls.push( springControls );
 
-        var flyControls     = new THREE.LeapFlyControls( camera , leapController );
+        var flyControls     = new THREE.LeapFlyControls( c , l );
         controls.push( flyControls );
+
+        var trackballControls = new THREE.LeapTrackballControls( c , l );
 
         /*
 
