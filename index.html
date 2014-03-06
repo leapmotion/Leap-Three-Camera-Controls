@@ -1,8 +1,7 @@
 
 <html>
   <head>
-
-    <script src="//js.leapmotion.com/0.3.0-beta2/leap.min.js">  </script>
+    <script src="http://js.leapmotion.com/leap-0.4.1.min.js"></script>
 
     <script src="lib/three.js">                                 </script>
     <script src="lib/stats.min.js">                             </script>
@@ -11,6 +10,7 @@
     <script src="lib/LeapSpringControls.js">                    </script>
     <script src="lib/LeapFlyControls.js">                       </script>
     <script src="lib/LeapTrackballControls.js">                 </script>
+    <script src="lib/LeapTwoFistControls.js">                 </script>
     
     <style>
 
@@ -82,11 +82,10 @@
       init();
 
       function switchControls(){
-
         activeControl ++;
         if( activeControl == controls.length )
           activeControl = 0;
-
+        console.log('switchControls', activeControl)
       }
 
 
@@ -123,11 +122,14 @@
         // the Spring controls require a scene to add the markers to!
         var springControls  = new THREE.LeapSpringControls( c , l , scene );
         controls.push( springControls );
+        
+        // var flyControls     = new THREE.LeapFlyControls( c , l );
+        // controls.push( flyControls );
+        
+        var fistControls = new THREE.LeapTwoFistControls(camera , leapController);
+        controls.push(fistControls);
 
-        var flyControls     = new THREE.LeapFlyControls( c , l );
-        controls.push( flyControls );
-
-        var trackballControls = new THREE.LeapTrackballControls( c , l );
+        // var trackballControls = new THREE.LeapTrackballControls( c , l );
 
         /*
 
@@ -219,7 +221,6 @@
 
 
       function animationLoop() {
-
         animate();
         requestId = window.requestAnimationFrame(animationLoop);
 
