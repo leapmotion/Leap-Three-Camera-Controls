@@ -2,8 +2,8 @@
 <html>
   <head>
 
-    <script src="//js.leapmotion.com/0.3.0-beta2/leap.min.js">  </script>
-
+    <!--<script src="lib/leap.min.js">                              </script>-->
+<script src="//js.leapmotion.com/leap-0.4.1.min.js"></script>
     <script src="lib/three.js">                                 </script>
     <script src="lib/stats.min.js">                             </script>
     
@@ -79,6 +79,7 @@
 
       
 
+      var frame;
       init();
 
       function switchControls(){
@@ -116,18 +117,18 @@
         var c = camera;
         var l = leapController
         // Create our Controls
-        var paddleControls  = new THREE.LeapPaddleControls( c , l );
+        var paddleControls  = new THREE.LeapPaddleControls( camera , l );
         controls.push( paddleControls );
 
 
         // the Spring controls require a scene to add the markers to!
-        var springControls  = new THREE.LeapSpringControls( c , l , scene );
+        var springControls  = new THREE.LeapSpringControls( camera  , l , scene );
         controls.push( springControls );
 
-        var flyControls     = new THREE.LeapFlyControls( c , l );
+        var flyControls     = new THREE.LeapFlyControls( camera  , l );
         controls.push( flyControls );
 
-        var trackballControls = new THREE.LeapTrackballControls( c , l );
+       // var trackballControls = new THREE.LeapTrackballControls( c , l );
 
         /*
 
@@ -211,6 +212,7 @@
 
       function animate(){
 
+        frame = leapController.frame();
         stats.update();
         controls[activeControl].update();
         renderer.render( scene , camera );
