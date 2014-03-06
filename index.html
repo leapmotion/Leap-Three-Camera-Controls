@@ -67,7 +67,7 @@
       // SCENE SIZE
       var SS = 1000;
       
-      var clock, camera, scene;
+      var clock, camera, scene, world;
       var container, renderer, stats;
       var activeControls , cameraController;
 
@@ -100,9 +100,10 @@
         clock = new THREE.Clock();
 
         scene = new THREE.Scene();
-
+        world = new THREE.Object3D();
         camera = new THREE.PerspectiveCamera( 50 , window.innerWidth / window.innerHeight , SS / 1000 , SS * 20 );
         camera.position.z = SS;
+        scene.add(world);
 
 
         /*
@@ -126,8 +127,10 @@
         // var flyControls     = new THREE.LeapFlyControls( c , l );
         // controls.push( flyControls );
         
-        var fistControls = new THREE.LeapTwoFistControls(camera , leapController);
+        var fistControls = new THREE.LeapTwoFistControls(world, leapController);
         controls.push(fistControls);
+        // switchControls();
+        // switchControls();
 
         // var trackballControls = new THREE.LeapTrackballControls( c , l );
 
@@ -165,8 +168,7 @@
 
           var particles = new THREE.ParticleSystem( geometry , material );
 
-          scene.add( particles );
-
+          world.add(particles);
         }
 
 
