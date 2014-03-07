@@ -1,0 +1,259 @@
+
+<html>
+  <head>
+    <script src="http://js.leapmotion.com/leap-0.4.1.min.js"></script>
+
+    <script src="lib/three.js">                                 </script>
+    <script src="lib/stats.min.js">                             </script>
+    
+    <script src="lib/LeapPaddleControls.js">                    </script>
+    <script src="lib/LeapSpringControls.js">                    </script>
+    <script src="lib/LeapFlyControls.js">                       </script>
+    <script src="lib/LeapTrackballControls.js">                 </script>
+    <script src="lib/LeapTwoFistControls.js">                 </script>
+    
+    <style>
+
+      body {
+
+        font:Arial;
+        overflow:hidden;
+
+      }
+
+      #container{
+
+        background:#000;
+        position:absolute;
+        top:0px;
+        left:0px;
+
+      }
+
+      #stats{
+
+        position:absolute;
+        bottom:0px;
+        right:0px;
+
+      }
+
+
+      #switch{
+
+        position:absolute;
+
+        top:0px;
+        left:0px;
+        color:#fff;
+        z-index:1;
+
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+
+    <a id="switch" onclick="switchControls()">Switch Controls</a>
+
+    <div id="container"></div>
+
+
+    <script>
+
+
+      // SCENE SIZE
+      var SS = 1000;
+      
+      var clock, camera, scene, world;
+      var container, renderer, stats;
+      var activeControls , cameraController;
+
+      var controls = [];
+      var activeControl = 0;
+
+      // Geometry for particle system
+      var geometery , material;
+
+      
+
+      init();
+
+      function switchControls(){
+        activeControl ++;
+        if( activeControl == controls.length )
+          activeControl = 0;
+        console.log('switchControls', activeControl)
+      }
+
+
+      function init(){
+
+        /*
+
+          SETTING UP SCENE
+
+        */
+
+        clock = new THREE.Clock();
+
+        scene = new THREE.Scene();
+        world = new THREE.Object3D();
+        camera = new THREE.PerspectiveCamera( 50 , window.innerWidth / window.innerHeight , SS / 1000 , SS * 20 );
+        camera.position.z = SS;
+        scene.add(world);
+
+
+        /*
+
+          SETTING UP CONTROLS
+
+        */
+        leapController = new Leap.Controller({enableGestures:true});
+
+        var c = camera;
+        var l = leapController
+        // Create our Controls
+        var paddleControls  = new THREE.LeapPaddleControls( c , l );
+        controls.push( paddleControls );
+
+
+        // the Spring controls require a scene to add the markers to!
+        var springControls  = new THREE.LeapSpringControls( c , l , scene );
+        controls.push( springControls );
+        
+        // var flyControls     = new THREE.LeapFlyControls( c , l );
+        // controls.push( flyControls );
+        
+        var fistControls = new THREE.LeapTwoFistControls(world, leapController);
+        controls.push(fistControls);
+        // switchControls();
+        // switchControls();
+
+        // var trackballControls = new THREE.LeapTrackballControls( c , l );
+
+        /*
+
+          SETTING UP STAR FIELD
+
+        */
+
+        for( var i = 0; i < 5; i ++ ){
+
+          geometry = new THREE.Geometry();
+
+          for( var j = 0 ; j < 10000; j++ ){
+
+            var vert = new THREE.Vector3();
+
+            vert.x = ( Math.random() - .5 ) * 10 * SS;
+            vert.y = ( Math.random() - .5 ) * 10 * SS;
+            vert.z = ( Math.random() - .5 ) * 10 * SS;
+
+            geometry.vertices.push( vert );
+
+          }
+
+          var color = new THREE.Color();
+          color.r = i / 5 ;
+          color.g = ( 5 - i ) / 5 ;
+          color.b = 1;
+          
+          var material = new THREE.ParticleSystemMaterial({
+            size:40, 
+            color:color.getHex()
+          });
+
+          var particles = new THREE.ParticleSystem( geometry , material );
+
+          world.add(particles);
+        }
+
+
+
+        /*
+
+          SETTING UP RENDERER
+
+        */
+        container = document.getElementById( 'container' );
+        
+        renderer = new THREE.WebGLRenderer( { antialias: true, clearColor:0x000000 } );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        container.appendChild( renderer.domElement );
+
+
+        /*
+
+          SETTING UP STATS
+
+        */
+        stats = new Stats();
+        container.appendChild( stats.domElement );
+
+
+        // adding an event listener to change our event window
+        window.addEventListener( 'resize', onWindowResize, false );
+
+        // Get things rolling
+        BEGIN();
+
+      }
+
+
+      function BEGIN(){
+
+        //Add things to do when the app first starts here
+
+        animationLoop();
+        leapController.connect();
+
+      }
+
+      function animate(){
+
+        stats.update();
+        controls[activeControl].update();
+        renderer.render( scene , camera );
+
+      }   
+
+
+      function animationLoop() {
+        animate();
+        requestId = window.requestAnimationFrame(animationLoop);
+
+      }
+
+      
+      function stopAnimationLoop() {
+        
+        if (requestId) {
+          cancelAnimationFrame(requestId);
+          requestId = undefined;
+        }
+
+      }
+
+      
+      function onWindowResize() {
+
+        windowHalfX = window.innerWidth / 2;
+        windowHalfY = window.innerHeight / 2;
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+      }
+
+
+
+    </script>
+
+  </body>
+</html>
