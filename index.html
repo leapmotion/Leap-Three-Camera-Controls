@@ -21,6 +21,32 @@
 
       }
 
+      #controls{
+
+         position:absolute;
+
+        top:0px;
+        left:0px;
+        color:#000;
+        z-index:1;
+
+        background:rgba( 255, 255, 255 , .5 );
+        border: 1px solid black;
+
+
+
+      }
+      .control{
+
+        padding: 10px;
+
+      }
+
+      .control:hover{
+        background:rgba( 255 , 255 , 255 , .9 );
+        border: 1px solid black;
+      }
+
       #container{
 
         background:#000;
@@ -55,8 +81,13 @@
 
   <body>
 
-
-    <a id="switch" onclick="switchControls()">Switch Controls</a>
+    <div id = "controls" >
+      <a class="control" onclick="switchControls('fly'      , this )">Leap Fly Controls</a>
+      <a class="control" onclick="switchControls('trackball', this )">Leap Trackball Controls</a>
+      <a class="control" onclick="switchControls('twoHand'  , this )">Leap Two Hand Controls</a>
+      <a class="control" onclick="switchControls('spring'   , this )">Leap Spring Controls</a>
+      <a class="control" onclick="switchControls('paddle'   , this )">Leap Paddle Controls</a>
+    </div>
 
     <div id="container"></div>
 
@@ -81,7 +112,14 @@
 
       init();
 
-      function switchControls(){
+      function switchControls( control ,  domElement ){
+
+        console.log( this );
+        console.log( event );
+
+        even
+       // if( control == 'fly' )
+          
         activeControl ++;
         if( activeControl == controls.length )
           activeControl = 0;
