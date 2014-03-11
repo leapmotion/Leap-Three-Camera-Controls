@@ -21,6 +21,31 @@
 
       }
 
+      #controls{
+
+        position:absolute;
+
+        top:0px;
+        left:0px;
+        color:#000;
+        z-index:1;
+
+        background:rgba( 255, 255, 255 , .5 );
+        border: 1px solid black;
+
+      }
+
+      .control{
+
+        padding: 10px;
+
+      }
+
+      .control:hover{
+        background:rgba( 255 , 255 , 255 , .9 );
+        border: 1px solid black;
+      }
+
       #container{
 
         background:#000;
@@ -55,8 +80,12 @@
 
   <body>
 
-
-    <a id="switch" onclick="switchControls()">Switch Controls</a>
+    <div id = "controls" >
+      <a class="control" onclick="switchControls('paddle'   , this )">Leap Paddle Controls</a>
+      <a class="control" onclick="switchControls('trackball', this )">Leap Trackball Controls</a>
+      <a class="control" onclick="switchControls('twoHand'  , this )">Leap Two Hand Controls</a>
+      <a class="control" onclick="switchControls('spring'   , this )">Leap Spring Controls</a>
+    </div>
 
     <div id="container"></div>
 
@@ -72,6 +101,8 @@
       var activeControls , cameraController;
 
       var controls = [];
+      var controlLinks = document.getElementsByClassName( 'control' );
+      console.log( controlLinks );
       var activeControl = 0;
 
       // Geometry for particle system
@@ -81,11 +112,47 @@
 
       init();
 
-      function switchControls(){
-        activeControl ++;
-        if( activeControl == controls.length )
+      function switchControls( control ,  domElement ){
+
+        console.log( this );
+        console.log( event );
+
+        if( control == 'paddle' ){
+
           activeControl = 0;
-        console.log('switchControls', activeControl)
+
+        }else if( control == 'trackball' ){
+
+          activeControl = 1;
+
+        }else if( control == 'twoHand' ){
+
+          activeControl = 2;
+
+        }else if( control == 'spring' ){
+
+          activeControl = 3;
+
+        }
+
+        domElement.style.background = "rgba( 255 , 255 , 255 , .9 )";
+        domElement.style.border= "1px solid black";
+        for( var i = 0; i < controlLinks.length; i++ ){
+
+          var element = controlLinks[i];
+          if( element !=  domElement ){
+
+            element.style.background = 'none';
+
+
+          }else{
+
+            console.log( 'skipped' );
+
+          }
+
+        }
+           console.log('switchControls', activeControl)
       }
 
 
@@ -100,7 +167,10 @@
         clock = new THREE.Clock();
 
         scene = new THREE.Scene();
+        
         world = new THREE.Object3D();
+
+
         camera = new THREE.PerspectiveCamera( 50 , window.innerWidth / window.innerHeight , SS / 1000 , SS * 20 );
         camera.position.z = SS;
         scene.add(world);
@@ -115,24 +185,22 @@
 
         var c = camera;
         var l = leapController
+        
         // Create our Controls
         var paddleControls  = new THREE.LeapPaddleControls( c , l );
         controls.push( paddleControls );
 
+         //camera.matrixAutoUpdate = false;
+
+        var trackballControls = new THREE.LeapTrackballControls( c , l );
+        controls.push( trackballControls );
+
+        var fistControls = new THREE.LeapTwoFistControls( c , l );
+        controls.push( fistControls );
 
         // the Spring controls require a scene to add the markers to!
         var springControls  = new THREE.LeapSpringControls( c , l , scene );
         controls.push( springControls );
-        
-        // var flyControls     = new THREE.LeapFlyControls( c , l );
-        // controls.push( flyControls );
-        
-        var fistControls = new THREE.LeapTwoFistControls(camera, leapController, true);
-        controls.push(fistControls);
-        switchControls();
-        switchControls();
-
-        // var trackballControls = new THREE.LeapTrackballControls( c , l );
 
         /*
 
@@ -144,7 +212,7 @@
 
           geometry = new THREE.Geometry();
 
-          for( var j = 0 ; j < 10000; j++ ){
+          for( var j = 0 ; j < 100; j++ ){
 
             var vert = new THREE.Vector3();
 
@@ -162,7 +230,7 @@
           color.b = 1;
           
           var material = new THREE.ParticleSystemMaterial({
-            size:40, 
+            size:60, 
             color:color.getHex()
           });
 
