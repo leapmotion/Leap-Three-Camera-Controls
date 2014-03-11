@@ -127,7 +127,7 @@
         // var flyControls     = new THREE.LeapFlyControls( c , l );
         // controls.push( flyControls );
         
-        var fistControls = new THREE.LeapTwoFistControls(world, leapController);
+        var fistControls = new THREE.LeapTwoFistControls(camera, leapController, true);
         controls.push(fistControls);
         switchControls();
         switchControls();
