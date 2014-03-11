@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  html,body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  canvas {
+  }
+</style>
+<script src="http://js.leapmotion.com/leap-0.4.1.min.js"></script>
+<body id="demo">
+  <canvas id="canvas"></canvas>
+</body>
+
+<script>
+var styles = getComputedStyle(document.body);
+var canvas = document.getElementById("canvas");
+var windowWidth = parseInt(styles.width);
+var windowHeight = parseInt(styles.height);
+
+canvas.setAttribute('width', windowWidth);
+canvas.setAttribute('height', windowHeight);
+console.log(canvas.attributes.width, canvas.attributes.height);
+var context = canvas.getContext('2d');
+
+    // finally query the various pixel ratios
+        devicePixelRatio = window.devicePixelRatio || 1,
+        backingStoreRatio = context.webkitBackingStorePixelRatio ||
+                            context.mozBackingStorePixelRatio ||
+                            context.msBackingStorePixelRatio ||
+                            context.oBackingStorePixelRatio ||
+                            context.backingStorePixelRatio || 1,
+    
+        ratio = devicePixelRatio / backingStoreRatio;
+    
+    // ensure we have a value set for auto.
+    // If auto is set to false then we
+    // will simply not upscale the canvas
+    // and the default behaviour will be maintained
+    if (typeof auto === 'undefined') {
+        auto = true;
+    }
+    
+    // upscale the canvas if the two ratios don't match
+    if (auto && devicePixelRatio !== backingStoreRatio) {
+    
+        var oldWidth = canvas.width;
+        var oldHeight = canvas.height;
+    
+        canvas.width = oldWidth * ratio;
+        canvas.height = oldHeight * ratio;
+    
+        canvas.style.width = oldWidth + 'px';
+        canvas.style.height = oldHeight + 'px';
+    
+        // now scale the context to counter
+        // the fact that we've manually scaled
+        // our canvas element
+        context.scale(ratio, ratio);
+    
+    }
+
+var TimeSeries = function (opts) {
+  opts = opts || {};
+  this.x = opts.x || 0;
+  this.y = opts.y || 0;
+  this.width = opts.width || 1000;
+  this.height = opts.height || 50;
+  this.length = opts.length || 1000;
+  this.color = opts.color || '#000';
+  this.frameHandler = opts.frameHandler;
+  
+  this.max = -Infinity;
+  this.min = Infinity;
+  this.data = [];
+}
+
+TimeSeries.prototype.onFrame = function (frame) {
+  this.frameHandler && this.frameHandler(frame);
+}
+
+TimeSeries.prototype.push = function (value) {
+  this.data.push(value);
+  
+  if (this.data.length >= this.length) {
+    this.data.shift();
+  }
+}
+
+TimeSeries.prototype.draw = function (context) {
+  var self = this;
+  var xScale = (this.width - 10) / (this.length - 1);
+  var yScale = -(this.height - 10) / (this.max - this.min);
+  
+  context.save();
+  context.strokeRect(this.x, this.y, this.width, this.height);
+  context.translate(this.x, this.y + this.height - 5);
+  context.strokeStyle = this.color;
+  context.beginPath();
+
+  var max = -Infinity;
+  var min = Infinity;
+  this.data.forEach(function (d, i) {
+    if (d > max) max = d;
+    if (d < min) min = d;
+    
+    if (isNaN(d)) {
+      context.stroke();
+      context.beginPath();
+    } else {
+      context.lineTo(i * xScale, (d - self.min) * yScale);
+    }
+  });
+  context.stroke();
+  context.restore();
+  this.min = min;
+  this.max = max;
+}
+
+var series = [];
+function addSeries(opts, fun) {
+  opts = opts || {};
+  opts.frameHandler = fun;
+  opts.y = series.length * 50;
+  opts.width = windowWidth;
+  
+  var ts = new TimeSeries(opts);
+  series.push(ts);
+  return ts;
+}
+
+addSeries({color: '#900'}, function (frame) {
+  var hands = frame.hands;
+  this.push(hands.length ? hands[0].palmPosition[0] : NaN);
+});
+
+addSeries({color: '#090'}, function (frame) {
+  var hands = frame.hands;
+  this.push(hands.length ? hands[0].palmPosition[1] : NaN);
+});
+
+addSeries({color: '#009'}, function (frame) {
+  var hands = frame.hands;
+  this.push(hands.length ? hands[0].palmPosition[2] : NaN);
+});
+
+var dx = addSeries({color: '#900'});
+var dy = addSeries({color: '#090'});
+var dz = addSeries({color: '#009'});
+
+addSeries({color: '#909'}, function (frame) {
+  var hands = frame.hands;
+  this.push(hands.length ? hands[0].fingers.length : NaN);
+});
+
+
+var leapController = new Leap.Controller({frameEventName: 'animationFrame'});
+leapController.connect();
+
+leapController.on('connect', function () {
+  // init();
+});
+
+context.fillStyle = '#000000';
+leapController.on('frame', function (frame) {
+  context.clearRect(0, 0, windowWidth, windowHeight);
+  series.forEach(function (s) {
+    s.onFrame(frame);
+    s.draw(context);
+  });
+
+  var frame = leapController.frame();
+  var anchorFrame = leapController.frame(1);
+
+  // do we have a frame
+  if (!frame || !frame.valid || !anchorFrame || !anchorFrame.valid) {
+    return;
+  }
+  
+  // match hands to anchors
+  // remove hands that have disappeared
+  // add hands that have appeared
+  var rawHands = frame.hands;
+  var rawAnchorHands = anchorFrame.hands;
+  
+  // processHands(filteredHands);
+  
+  var hands = [];
+  var anchorHands = [];
+  
+  rawHands.forEach(function (hand, hIdx) {
+    var anchorHand = anchorFrame.hand(hand.id);
+    if (anchorHand.valid) {
+      hands.push(hand);
+      anchorHands.push(anchorHand);
+    }
+  });
+  var translation = getTranslation(anchorHands.filter(filterFist),
+                                  hands.filter(filterFist));
+  dx.push(translation[0]);
+  dy.push(translation[1]);
+  dz.push(translation[2]);
+  
+});
+
+function getTranslation(anchorHands, hands) {
+  if (anchorHands.length != hands.length) {
+    return [0, 0, 0];
+  }
+  var centerAnchor = getCenter(anchorHands);
+  var centerCurrent = getCenter(hands);
+  return [
+    centerCurrent[0] - centerAnchor[0],
+    centerCurrent[1] - centerAnchor[1],
+    centerCurrent[2] - centerAnchor[2]
+  ];
+}
+function filterFist(hand) {
+  return hand.fingers.length == 0;
+}
+
+function getCenter(hands) {
+  var l = hands.length;
+  if (l == 0) {
+    return [0, 0, 0];
+  } else if (l == 1) {
+    return hands[0].palmPosition;
+  }
+  
+  var x = y = z = 0;
+  hands.forEach(function (hand, i) {
+    x += hand.palmPosition[0];
+    y += hand.palmPosition[1];
+    z += hand.palmPosition[2];
+  });
+  return [x/l, y/l, z/l];
+}
+
+function getAngles(hands) {
+  var pos1 = hands[0].palmPosition;
+  var pos2 = hands[1].palmPosition;
+  
+  var dx = pos2[0] - pos1[0];
+  var dy = pos2[1] - pos1[1];
+  var dz = pos2[2] - pos1[2];
+  var mag = dx * dx + dy * dy + dz * dz;
+  
+  var ax = (dz * dz + dy * dy) / mag > MIN_ROT_MAG_SQ ? Math.atan2(dz, dy) : 0;
+  var ay = (dx * dx + dz * dz) / mag > MIN_ROT_MAG_SQ ? Math.atan2(dx, dz) : 0;
+  var az = (dy * dy + dx * dx) / mag > MIN_ROT_MAG_SQ ? Math.atan2(dy, dx) : 0;
+  
+  return [ax, ay, az];
+}
+
+function aveDistance(center, hands) {
+  var aveDistance = [0, 0, 0];
+  hands.forEach(function (hand) {
+    var p = hand.palmPosition;
+    aveDistance[0] += Math.abs(p[0] - center[0]);
+    aveDistance[1] += Math.abs(p[1] - center[1]);
+    aveDistance[2] += Math.abs(p[2] - center[2]);
+  });
+  aveDistance[0] /= hands.length;
+  aveDistance[1] /= hands.length;
+  aveDistance[2] /= hands.length;
+  return aveDistance;
+}
+
+function length(arr) {
+  var sum = 0;
+  arr.forEach(function (v) {
+    sum += v * v;
+  });
+  return Math.sqrt(sum);
+}
+
+function dist(arr1, arr2) {
+  var sum = 0;
+  arr1.forEach(function (v, i) {
+    var d = v - arr2[i];
+    sum += d * d;
+  });
+  return Math.sqrt(sum);
+}
+
+function isFist(h) {
+  return h && (h.fingers.length == 0);
+}
+
+</script>
+</html>
