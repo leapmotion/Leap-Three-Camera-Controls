@@ -1,22 +1,23 @@
 
 <html>
   <head>
-    <script src="lib/leap.min.js"></script>
+    <script src="lib/leap.min.js">                              </script>
 
     <script src="lib/three.js">                                 </script>
     <script src="lib/stats.min.js">                             </script>
+    <script src="lib/dat.gui.min.js">                           </script>
     
     <script src="lib/LeapPaddleControls.js">                    </script>
     <script src="lib/LeapSpringControls.js">                    </script>
     <script src="lib/LeapFlyControls.js">                       </script>
     <script src="lib/LeapTrackballControls.js">                 </script>
-    <script src="lib/LeapTwoFistControls.js">                 </script>
+    <script src="lib/LeapTwoFistControls.js">                   </script>
     
     <style>
 
       body {
 
-        font:Arial;
+        font-family:"GeoSans";
         overflow:hidden;
 
       }
@@ -30,6 +31,8 @@
         color:#000;
         z-index:1;
 
+        font-size: 20px;
+
         background:rgba( 255, 255, 255 , .5 );
         border: 1px solid black;
 
@@ -38,12 +41,18 @@
       .control{
 
         padding: 10px;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
 
       }
 
       .control:hover{
         background:rgba( 255 , 255 , 255 , .9 );
-        border: 1px solid black;
+        //border: 1px solid black;
+      }
+
+      .active{
+        background:rgba( 255 , 255 , 255 , .9 );
       }
 
       #container{
@@ -74,6 +83,12 @@
         z-index:1;
 
       }
+
+      @font-face {
+        font-family: "GeoSans";
+        src: url("lib/GeosansLight.ttf");
+      }
+
     </style>
 
   </head>
@@ -99,6 +114,8 @@
       var clock, camera, scene, world;
       var container, renderer, stats;
       var activeControls , cameraController;
+
+      var GUI;
 
       var controls = [];
       var controlLinks = document.getElementsByClassName( 'control' );
@@ -135,15 +152,14 @@
 
         }
 
-        domElement.style.background = "rgba( 255 , 255 , 255 , .9 )";
-        domElement.style.border= "1px solid black";
+        domElement.classList.add( 'active' );
+        //domElement.style.border= "1px solid black";
         for( var i = 0; i < controlLinks.length; i++ ){
 
           var element = controlLinks[i];
           if( element !=  domElement ){
 
-            element.style.background = 'none';
-
+            element.classList.remove( 'active' );
 
           }else{
 
@@ -158,6 +174,8 @@
 
       function init(){
 
+ 
+        
         /*
 
           SETTING UP SCENE
@@ -202,6 +220,61 @@
         var springControls  = new THREE.LeapSpringControls( c , l , scene );
         controls.push( springControls );
 
+
+
+        /*
+
+          SETTING UP DAT GUI
+
+        */
+
+        var GUI_PARAMS = {};
+        GUI_PARAMS.resetCamera = function(){
+
+          springControls.target.position = new THREE.Vector3(0,0,0);
+          camera.position = new THREE.Vector3();
+          camera.rotation = new THREE.Euler();
+          camera.lookAt( new THREE.Vector3( 0 , 0 , 0 ) );
+
+        }
+
+        gui = new dat.GUI();
+
+        gui.add( GUI_PARAMS , 'resetCamera' );
+
+        gui.paddleControls = gui.addFolder( 'Paddle Controls' );
+        gui.trackballControls = gui.addFolder( 'Trackball Controls' );
+        gui.twoHandControls = gui.addFolder( 'Two Hand Controls' );
+        gui.springControls = gui.addFolder( 'Spring Controls' );
+
+
+        gui.paddleControls.add( paddleControls , 'weakDampening' , 0.8 , 1);
+        gui.paddleControls.add( paddleControls , 'strongDampening', 0.8 , 1 );
+        gui.paddleControls.add( paddleControls , 'directionStrength' , 0 , 6 );
+        gui.paddleControls.add( paddleControls , 'power' , 0 , 6);
+        gui.paddleControls.add( paddleControls , 'divisionFactor' , 0 , 5000 );
+        gui.paddleControls.add( paddleControls , 'maxVelocity' , 0 , 100 );
+
+
+
+        gui.trackballControls.add( trackballControls , 'rotationSpeed' , 0.0 , 100 );
+        gui.trackballControls.add( trackballControls , 'rotationDampening' , 0.8 , 1);
+        gui.trackballControls.add( trackballControls , 'zoomDampening' , 0.8 , 1 );
+        gui.trackballControls.add( trackballControls , 'minZoom' , 0 , 4000 );
+        gui.trackballControls.add( trackballControls , 'maxZoom' , 0 , 4000 );
+
+
+        gui.springControls.add( springControls , 'weakDampening' , 0.8 , 1 );
+        gui.springControls.add( springControls , 'strongDampening' , 0.8 , 1 );
+        gui.springControls.add( springControls , 'size' , 0 , 1000 );
+        gui.springControls.add( springControls , 'springConstant' , 0 , 50 );
+        gui.springControls.add( springControls , 'staticLength' , 0 , 1000 );
+        gui.springControls.add( springControls , 'mass' , 0 , 5000 );
+        gui.springControls.add( springControls , 'anchorToTarget' , 0 , 100 );
+
+
+
+
         /*
 
           SETTING UP STAR FIELD
@@ -212,7 +285,7 @@
 
           geometry = new THREE.Geometry();
 
-          for( var j = 0 ; j < 100; j++ ){
+          for( var j = 0 ; j < 1000; j++ ){
 
             var vert = new THREE.Vector3();
 
