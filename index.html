@@ -9,9 +9,7 @@
     
     <script src="lib/LeapPaddleControls.js">                    </script>
     <script src="lib/LeapSpringControls.js">                    </script>
-
     <script src="lib/LeapTrackballControls.js">                 </script>
-
     <script src="lib/LeapTwoHandControls.js">                 </script>
     
     <style>
@@ -50,6 +48,23 @@
       .control:hover{
         background:rgba( 255 , 255 , 255 , .9 );
         //border: 1px solid black;
+      }
+
+
+      #descriptions{
+
+        position: fixed;
+        width:634px;
+        top:34px;
+        left:0px;
+        background:rgba( 255 , 255 , 255 , .9 );
+
+      }
+
+      .description{
+
+        padding:50px;
+
       }
 
       .active{
@@ -102,6 +117,60 @@
       <a class="control" onclick="switchControls('twoHand'  , this )">Leap Two Hand Controls</a>
       <a class="control" onclick="switchControls('spring'   , this )">Leap Spring Controls</a>
     </div>
+
+    <div id="descriptions">
+      <div class="description">
+        <h1> Paddle Controls </h1>
+        <p> 
+          Paddle Controls are a type of control that allows the user to 'paddle' through a scene.
+          If a user 'slices' through the field, the camera will not move, but if they 'paddle' 
+          through it, it will. The parameters are as follows:
+          <ul>
+            <li></li>
+          </ul>
+        </p>
+      </div>
+      <div class="description">
+        <h1> Trackball Controls </h1>
+        <p>
+          Trackball Controls enable the user to use the scene like a giant ball that they
+          push around with a single hand. Although there is a 'zoom' part of this controls,
+          currently it is based more on rotation than it is is translation. The parameters 
+          as follows:
+          <ul>
+            <li></li>
+          </ul>
+        </p>
+      </div>
+      <div class="description">
+        <h1> Two Hand Controls </h1>
+        <p>
+          Two Hand Controls let a user move around the scene by pinching. Once engaged in a 
+          pinch the user can simply move their hand to move the scene, or additionally begin
+          pinching with the second hand to rotate, scale, or translate the scene. The
+          parameters are as follows:
+          <ul>
+            <li></li>
+          </ul>
+        </p>
+      </div>
+      <div class="description">
+        <h1> Spring Controls </h1>
+        <p>
+          Spring Controls use physics to create a interaction method. By pinching, the user
+          places an 'anchor' at the position they pinched. A spring is connected between the 
+          camera and the anchor, so it gets pulled to a stable position a certain distance 
+          away from the anchor. Users can also keep their hand pinched to smoothly move / look
+          around the scene. The parameters are as follows:
+          <ul>
+            <li></li>
+          </ul>
+        </p>
+      </div>
+
+
+
+
 
     <div id="container"></div>
 
