@@ -9,9 +9,10 @@
     
     <script src="lib/LeapPaddleControls.js">                    </script>
     <script src="lib/LeapSpringControls.js">                    </script>
-    <script src="lib/LeapFlyControls.js">                       </script>
+
     <script src="lib/LeapTrackballControls.js">                 </script>
-    <script src="lib/LeapTwoFistControls.js">                   </script>
+
+    <script src="lib/LeapTwoHandControls.js">                 </script>
     
     <style>
 
@@ -213,7 +214,7 @@
         var trackballControls = new THREE.LeapTrackballControls( c , l );
         controls.push( trackballControls );
 
-        var fistControls = new THREE.LeapTwoFistControls( c , l );
+        var fistControls = new THREE.LeapTwoHandControls( c , l );
         controls.push( fistControls );
 
         // the Spring controls require a scene to add the markers to!
