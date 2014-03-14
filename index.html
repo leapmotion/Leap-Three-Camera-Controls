@@ -50,14 +50,18 @@
         //border: 1px solid black;
       }
 
+      .hide{
+        display: none;
+      }
 
       #descriptions{
 
-        position: fixed;
-        width:634px;
+        position: absolute;
+        width:803px;
         top:34px;
         left:0px;
         background:rgba( 255 , 255 , 255 , .9 );
+        z-index:999;
 
       }
 
@@ -112,7 +116,7 @@
   <body>
 
     <div id = "controls" >
-      <a class="control" onclick="switchControls('paddle'   , this )">Leap Paddle Controls</a>
+      <a class="control active" onclick="switchControls('paddle'   , this )">Leap Paddle Controls</a>
       <a class="control" onclick="switchControls('trackball', this )">Leap Trackball Controls</a>
       <a class="control" onclick="switchControls('twoHand'  , this )">Leap Two Hand Controls</a>
       <a class="control" onclick="switchControls('spring'   , this )">Leap Spring Controls</a>
@@ -126,11 +130,16 @@
           If a user 'slices' through the field, the camera will not move, but if they 'paddle' 
           through it, it will. The parameters are as follows:
           <ul>
-            <li></li>
+            <li><b>Dampening:</b> This will alter how fast the field will slow down</li>
+            <li><b>Direction Strength:</b> This will alter how much the hand must be 'paddling.</li>
+            <li><b>Power:</b> This will alter the falloff for movement.</li>
+            <li><b>Division Factor:</b> This is a divides the speed, and is well paired with power</li>
+            <li><b>Max Velocity:</b> This makes sure that the speed doesn't go over a certain amount.</li>
+
           </ul>
         </p>
       </div>
-      <div class="description">
+      <div class="description hide">
         <h1> Trackball Controls </h1>
         <p>
           Trackball Controls enable the user to use the scene like a giant ball that they
@@ -138,11 +147,15 @@
           currently it is based more on rotation than it is is translation. The parameters 
           as follows:
           <ul>
-            <li></li>
+            <li><b>Rotation Speed:</b> Changes how fast the scene will rotate.</li>
+            <li><b>Rotation Dampening:</b> Changes how fast the scene will slow down </li>
+            <li><b>Zoom Dampening:</b> Changes how fast the Zoom will slow down </li>
+            <li><b>Min Zoom:</b> The minimum distance the camera can get from the center </li>
+            <li><b>Max Zoom:</b> The maxium distance the camera can get from the center </li>
           </ul>
         </p>
       </div>
-      <div class="description">
+      <div class="description hide">
         <h1> Two Hand Controls </h1>
         <p>
           Two Hand Controls let a user move around the scene by pinching. Once engaged in a 
@@ -150,11 +163,17 @@
           pinching with the second hand to rotate, scale, or translate the scene. The
           parameters are as follows:
           <ul>
-            <li></li>
+            <li><b> Translation Speed: </b> Speed that you move the scene when you pinch</li>
+            <li><b> Translation Decay: </b>How the scene slows down when you let go</li>
+            <li><b> Scale Decay: </b>How the scene scales down when you let go</li>
+            <li><b> Rotation Slerp: </b>How the rotation updates when you rotate</li>
+            <li><b> Rotation Speed: </b>How fast you rotate</li>
+            <li><b> Pinch Threshold: </b>What point a pinch starts</li>
+            <li><b> Smoothin Value: </b>Rate at which the data gets smoothed.</li>
           </ul>
         </p>
       </div>
-      <div class="description">
+      <div class="description hide">
         <h1> Spring Controls </h1>
         <p>
           Spring Controls use physics to create a interaction method. By pinching, the user
@@ -163,10 +182,18 @@
           away from the anchor. Users can also keep their hand pinched to smoothly move / look
           around the scene. The parameters are as follows:
           <ul>
-            <li></li>
+            <li><b> Dampening: </b> How fast the scene slows down</li>
+            <li><b> Size: </b> How far away the hand can move.</li>
+            <li><b> Spring Constant: </b> Variable to define physics of spring</li>
+            <li><b> Static Length: </b> Resting distance from target</li>
+            <li><b> Mass: </b> Variable to define physics of spring</li>
+            <li><b> Anchor to Target: </b> Rate at which the anchor tweens to the target</li>
+
+
           </ul>
         </p>
       </div>
+    </div>
 
 
 
@@ -189,6 +216,7 @@
 
       var controls = [];
       var controlLinks = document.getElementsByClassName( 'control' );
+      var controlDescriptions = document.getElementsByClassName( 'description' );
       console.log( controlLinks );
       var activeControl = 0;
 
@@ -227,7 +255,16 @@
         for( var i = 0; i < controlLinks.length; i++ ){
 
           var element = controlLinks[i];
+          var description = controlDescriptions[i];
+         
+          if( i != activeControl ){
+            description.classList.add( 'hide' );
+          }else{
+            description.classList.remove( 'hide' );
+          }
           if( element !=  domElement ){
+
+
 
             element.classList.remove( 'active' );
 
@@ -283,13 +320,12 @@
         var trackballControls = new THREE.LeapTrackballControls( c , l );
         controls.push( trackballControls );
 
-        var fistControls = new THREE.LeapTwoHandControls( c , l );
-        controls.push( fistControls );
+        var twoHandControls = new THREE.LeapTwoHandControls( c , l );
+        controls.push( twoHandControls );
 
         // the Spring controls require a scene to add the markers to!
         var springControls  = new THREE.LeapSpringControls( c , l , scene );
         controls.push( springControls );
-
 
 
         /*
@@ -325,7 +361,13 @@
         gui.paddleControls.add( paddleControls , 'divisionFactor' , 0 , 5000 );
         gui.paddleControls.add( paddleControls , 'maxVelocity' , 0 , 100 );
 
-
+        gui.twoHandControls.add( twoHandControls , 'translationSpeed' , 0 , 100);
+        gui.twoHandControls.add( twoHandControls , 'translationDecay' , 0 , 1);
+        gui.twoHandControls.add( twoHandControls , 'scaleDecay' , 0 , 1);
+        gui.twoHandControls.add( twoHandControls , 'rotationSlerp' , 0 , 1);
+        gui.twoHandControls.add( twoHandControls , 'rotationSpeed' , 0 , 20);
+        gui.twoHandControls.add( twoHandControls , 'pinchThreshold' , 0 , 1);
+        gui.twoHandControls.add( twoHandControls , 'smoothingValue' , 0 , 1);
 
         gui.trackballControls.add( trackballControls , 'rotationSpeed' , 0.0 , 100 );
         gui.trackballControls.add( trackballControls , 'rotationDampening' , 0.8 , 1);
