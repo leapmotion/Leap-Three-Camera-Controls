@@ -344,45 +344,45 @@
 
         }
 
-        gui = new dat.GUI();
-
-        gui.add( GUI_PARAMS , 'resetCamera' );
-
-        gui.paddleControls = gui.addFolder( 'Paddle Controls' );
-        gui.trackballControls = gui.addFolder( 'Trackball Controls' );
-        gui.twoHandControls = gui.addFolder( 'Two Hand Controls' );
-        gui.springControls = gui.addFolder( 'Spring Controls' );
 
 
-        gui.paddleControls.add( paddleControls , 'weakDampening' , 0.8 , 1);
-        gui.paddleControls.add( paddleControls , 'strongDampening', 0.8 , 1 );
-        gui.paddleControls.add( paddleControls , 'directionStrength' , 0 , 6 );
-        gui.paddleControls.add( paddleControls , 'power' , 0 , 6);
-        gui.paddleControls.add( paddleControls , 'divisionFactor' , 0 , 5000 );
-        gui.paddleControls.add( paddleControls , 'maxVelocity' , 0 , 100 );
+        guiPaddleControls = new dat.GUI();
+        guiTrackballControls = new dat.GUI();
+        guiTwoHandControls = new dat.GUI();
+        guiSpringControls = new dat.GUI();
 
-        gui.twoHandControls.add( twoHandControls , 'translationSpeed' , 0 , 100);
-        gui.twoHandControls.add( twoHandControls , 'translationDecay' , 0 , 1);
-        gui.twoHandControls.add( twoHandControls , 'scaleDecay' , 0 , 1);
-        gui.twoHandControls.add( twoHandControls , 'rotationSlerp' , 0 , 1);
-        gui.twoHandControls.add( twoHandControls , 'rotationSpeed' , 0 , 20);
-        gui.twoHandControls.add( twoHandControls , 'pinchThreshold' , 0 , 1);
-        gui.twoHandControls.add( twoHandControls , 'smoothingValue' , 0 , 1);
+        guiPaddleControls.add( GUI_PARAMS , 'resetCamera' );
+        guiPaddleControls.add( paddleControls , 'weakDampening' , 0.8 , 1);
+        guiPaddleControls.add( paddleControls , 'strongDampening', 0.8 , 1 );
+        guiPaddleControls.add( paddleControls , 'directionStrength' , 0 , 6 );
+        guiPaddleControls.add( paddleControls , 'power' , 0 , 6);
+        guiPaddleControls.add( paddleControls , 'divisionFactor' , 0 , 5000 );
+        guiPaddleControls.add( paddleControls , 'maxVelocity' , 0 , 100 );
 
-        gui.trackballControls.add( trackballControls , 'rotationSpeed' , 0.0 , 100 );
-        gui.trackballControls.add( trackballControls , 'rotationDampening' , 0.8 , 1);
-        gui.trackballControls.add( trackballControls , 'zoomDampening' , 0.8 , 1 );
-        gui.trackballControls.add( trackballControls , 'minZoom' , 0 , 4000 );
-        gui.trackballControls.add( trackballControls , 'maxZoom' , 0 , 4000 );
+        guiTwoHandControls.add( GUI_PARAMS , 'resetCamera' );
+        guiTwoHandControls.add( twoHandControls , 'translationSpeed' , 0 , 100);
+        guiTwoHandControls.add( twoHandControls , 'translationDecay' , 0 , 1);
+        guiTwoHandControls.add( twoHandControls , 'scaleDecay' , 0 , 1);
+        guiTwoHandControls.add( twoHandControls , 'rotationSlerp' , 0 , 1);
+        guiTwoHandControls.add( twoHandControls , 'rotationSpeed' , 0 , 20);
+        guiTwoHandControls.add( twoHandControls , 'pinchThreshold' , 0 , 1);
+        guiTwoHandControls.add( twoHandControls , 'smoothingValue' , 0 , 1);
 
+        guiTrackballControls.add( GUI_PARAMS , 'resetCamera' );
+        guiTrackballControls.add( trackballControls , 'rotationSpeed' , 0.0 , 100 );
+        guiTrackballControls.add( trackballControls , 'rotationDampening' , 0.8 , 1);
+        guiTrackballControls.add( trackballControls , 'zoomDampening' , 0.8 , 1 );
+        guiTrackballControls.add( trackballControls , 'minZoom' , 0 , 4000 );
+        guiTrackballControls.add( trackballControls , 'maxZoom' , 0 , 4000 );
 
-        gui.springControls.add( springControls , 'weakDampening' , 0.8 , 1 );
-        gui.springControls.add( springControls , 'strongDampening' , 0.8 , 1 );
-        gui.springControls.add( springControls , 'size' , 0 , 1000 );
-        gui.springControls.add( springControls , 'springConstant' , 0 , 50 );
-        gui.springControls.add( springControls , 'staticLength' , 0 , 1000 );
-        gui.springControls.add( springControls , 'mass' , 0 , 5000 );
-        gui.springControls.add( springControls , 'anchorToTarget' , 0 , 100 );
+        guiSpringControls.add( GUI_PARAMS , 'resetCamera' );
+        guiSpringControls.add( springControls , 'weakDampening' , 0.8 , 1 );
+        guiSpringControls.add( springControls , 'strongDampening' , 0.8 , 1 );
+        guiSpringControls.add( springControls , 'size' , 0 , 1000 );
+        guiSpringControls.add( springControls , 'springConstant' , 0 , 50 );
+        guiSpringControls.add( springControls , 'staticLength' , 0 , 1000 );
+        guiSpringControls.add( springControls , 'mass' , 0 , 5000 );
+        guiSpringControls.add( springControls , 'anchorToTarget' , 0 , 100 );
 
 
 
