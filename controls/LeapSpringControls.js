@@ -1,7 +1,7 @@
 /**
  * @author cabbibo / http://cabbibo.com
  *
- * Circle to create a new anchor! 
+ * Pinch to create a new anchor! 
  * Will need to pass in a Scene, as well as a leap controller
  * In order to create the camera, so that you can place the 
  * UI elements
@@ -45,8 +45,6 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
 
   this.placesTraveled   = [];
   
-  //this.lDivisionFactor     = 50;
-
 
   // Creates the Target Object ( object that will tween to anchor
   this.target = new THREE.Object3D();
@@ -87,11 +85,6 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
     // Hooke's Law
     var f = difference.normalize().multiplyScalar(x).multiplyScalar( this.springConstant );
 
-    /*if( x < 0 ){
-      var addForce = difference.normalize().multiplyScalar( - x / l );
-      f.add( addForce );
-    }*/
-
     return f;
 
   }
@@ -108,7 +101,7 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
 
   }
 
-  this.leapToScene = function( position  ){
+  this.leapToScene = function( position ){
 
     var x = position[0] - this.interactionBox.center[0];
     var y = position[1] - this.interactionBox.center[1];
@@ -136,8 +129,13 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
     // and also the interaction box
     if( !this.oFrame ){
       this.oFrame = this.frame;
+    }
+
+    if( this.frame.valid ){
       this.interactionBox = this.frame.data.interactionBox;
     }
+
+
   
     if( this.frame ){
 
@@ -157,12 +155,10 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
         var pinchStrength = this.frame.hands[0].pinchStrength;
         if( pinchStrength > .5 ){
     
-              this.target.position = position;
+          this.target.position = position;
 
-              this.placesTraveled.push( position );
-
-              // Uses the gesture radius to define the size of attraction
-              this.staticLength = /*( 1-pinchStrength ) */ this.size;
+          this.placesTraveled.push( position );
+ 
         }
 
       }else{
@@ -177,7 +173,6 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
 
   }
 
-  // Non - rigid, don't update if past x = 0 , only look at if x > 0
   this.update = function(){
 
     // Just incase this is overwritten somewhere else in the code
