@@ -1,16 +1,12 @@
 <html>
   <head>
     <style>
-
       #container{
-
         background:#000;
         position:absolute;
         top:0px;
         left:0px;
-
       }
-
     </style>
   </head>
   <body>    
@@ -63,7 +59,8 @@
         sphere.position.x = 10;
         scene.add( sphere );
 
-
+        var loader = new THREE.OBJLoader();
+    
         container = document.getElementById( 'container' );
         renderer = new THREE.WebGLRenderer();
         renderer.setSize( window.innerWidth, window.innerHeight );
