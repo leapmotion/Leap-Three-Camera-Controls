@@ -345,11 +345,12 @@
         }
 
 
+        gui = new dat.GUI();
 
-        guiPaddleControls = new dat.GUI();
-        guiTrackballControls = new dat.GUI();
-        guiTwoHandControls = new dat.GUI();
-        guiSpringControls = new dat.GUI();
+        guiPaddleControls = gui.addFolder('Paddle Controls');
+        guiTrackballControls = gui.addFolder('Trackball Controls');
+        guiTwoHandControls = gui.addFolder('Two Hand Controls');
+        guiSpringControls = gui.addFolder('Spring Controls');
 
         guiPaddleControls.add( GUI_PARAMS , 'resetCamera' );
         guiPaddleControls.add( paddleControls , 'weakDampening' , 0.8 , 1);
