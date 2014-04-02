@@ -23,7 +23,8 @@
     this.rotationDampening        = .98;
     this.zoom                     = 40;
     this.zoomSpeed                = 0;
-    this.zoomDampening            = .9;
+    this.zoomDampening            = .6;
+    this.zoomCutoff               = .9;
 
     this.minZoom                  = 20;
     this.maxZoom                  = 80;
@@ -32,9 +33,7 @@
     this.angularVelocity = new THREE.Vector3();
 
 
-    this.getTorque = function(){
-
-      var frame = this.controller.frame();
+    this.getTorque = function( frame ){
 
       var torqueTotal = new THREE.Vector3();
       
@@ -43,7 +42,8 @@
 
         //console.log( this.angularVelocity );
         hand = frame.hands[0];
-        var hDirection = new THREE.Vector3().fromArray( hand.direction );
+        var hDirection  = new THREE.Vector3().fromArray( hand.direction );
+        var hNormal     = new THREE.Vector3().fromArray( hand.palmNormal );
        // hDirection.applyMatrix4( this.rotatingObject.matrix );
 
 
@@ -59,12 +59,16 @@
             // First off see if the fingers pointed
             // the same direction as the hand
             var fDirection = new THREE.Vector3().fromArray( fD );
-            //fDirection.applyMatrix4( this.rotatingObject.matrix );
-            var match = fDirection.dot( hDirection );
+            var fMatch = fDirection.dot( hDirection );
 
+            // See if the finger velocity is in the same direction
+            // as the hand normal
             var fVelocity = new THREE.Vector3().fromArray( fV );
-            //fVelocity.applyMatrix4( this.rotatingObject.matrix );
-            fVelocity.multiplyScalar( (this.rotationSpeed  / 100000) * match );
+            var tmp = fVelocity.clone();
+            var vMatch = Math.abs( tmp.normalize().dot( hNormal ) );
+
+
+            fVelocity.multiplyScalar( (this.rotationSpeed  / 100000) * fMatch * vMatch );
 
             var torque = new THREE.Vector3().crossVectors( fVelocity , hDirection );
             torqueTotal.add( torque );
@@ -79,19 +83,16 @@
 
     }
 
-    this.getZoomForce = function(){
-
-      var frame = this.controller.frame();
+    this.getZoomForce = function( frame ){
 
       var zoomForce = 0;
 
       if( frame.hands[0] ){
 
         var hand = frame.hands[0];
-
         var handNormal = new THREE.Vector3().fromArray( hand.palmNormal );
 
-        if( Math.abs( handNormal.z ) > .8 ){
+        if( Math.abs( handNormal.z ) > .9 ){
 
           var palmVelocity = new THREE.Vector3().fromArray( hand.palmVelocity );
 
@@ -130,13 +131,44 @@
 
     }
 
+    this.getDampening = function( frame ){
+
+      var frame = this.controller.frame();
+      
+      var dampening = this.rotationDampening;
+
+      if( frame.hands[0] ){
+        var hand = frame.hands[0];
+        
+        for( var i = 0; i < hand.fingers.length; i++ ){
+
+          var finger = hand.fingers[i];
+
+          if( finger.extended ){
+
+            // If any of our fingers are touching, slow it WAY down
+            if( finger.touchZone == 'touching' ) dampening = .1;
+        
+
+          }
+
+        }
+      }
+
+      return dampening;
+
+    }
+
     this.update = function(){
 
       // making sure our matrix transforms don't get overwritten
-      this.object.matrixAutoUpdate = false;  
+      this.object.matrixAutoUpdate = false; 
 
-      var torque    = this.getTorque();
-      var zoomForce = this.getZoomForce();
+      var frame     = this.controller.frame();
+
+      var torque    = this.getTorque(     frame );
+      var zoomForce = this.getZoomForce(  frame );
+      var dampening = this.getDampening(  frame );
       var dTime     = this.clock.getDelta();
       
       this.zoomSpeed  += zoomForce * dTime;
@@ -157,7 +189,7 @@
       }
 
       this.angularVelocity.add( torque );
-      this.angularVelocity.multiplyScalar( this.rotationDampening );
+      this.angularVelocity.multiplyScalar( dampening );
            
       var angularDistance = this.angularVelocity.clone().multiplyScalar( dTime );
 
