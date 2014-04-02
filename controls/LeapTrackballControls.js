@@ -92,8 +92,9 @@
         var hand = frame.hands[0];
         var handNormal = new THREE.Vector3().fromArray( hand.palmNormal );
 
-        if( Math.abs( handNormal.z ) > .9 ){
+        if( Math.abs( handNormal.z ) > .8 ){
 
+          this.rotationDampening = .7;
           var palmVelocity = new THREE.Vector3().fromArray( hand.palmVelocity );
 
           for( var i = 0; i < hand.fingers.length; i++ ){
@@ -123,8 +124,11 @@
 
           }
 
+        }else{
+          this.rotationDampening = .98;
         }
-
+      }else{
+        this.rotationDampening = .98;
       }
 
       return zoomForce;
