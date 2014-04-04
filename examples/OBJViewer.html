@@ -110,18 +110,13 @@
 
             object.traverse( function ( child ) {
 
-              console.log('CHECK' );
               if ( child instanceof THREE.Mesh ) {
 
-                console.log( 'sss');
-                console.log( child );
                 child.material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
                 child.materialNeedsUpdate = true;
 
                 child.geometry.computeBoundingSphere();
                 child.geometry.computeBoundingBox();
-                console.log( child.geometry.boundingSphere );
-                console.log( child.geometry.boundingBox );
                 
 
               }
