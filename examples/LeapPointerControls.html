@@ -1,0 +1,204 @@
+<html>
+  <head>
+    <style>
+
+      #container{
+
+        background:#000;
+        position:absolute;
+        top:0px;
+        left:0px;
+
+      }
+
+    </style>
+  </head>
+  <body>    
+
+    <div id="container"></div>
+
+    <script src="../lib/leap.min.js"></script>
+    <script src="../lib/three.js"></script>
+
+    <script src="../lib/OBJLoader.js"></script>
+
+
+    <script src="../controls/LeapPointerControls.js"></script>
+    
+    <script>
+
+      var container , camera , scener, renderer , stats;
+
+      var controller , controls;
+
+      var OBJ_Loader;
+
+      init();
+      animate();
+
+      function init(){
+
+        controller = new Leap.Controller();
+     
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(
+          50 ,
+          window.innerWidth / window.innerHeight,
+          1 ,
+          1000
+        );
+
+        camera.position.z = 100;
+        console.log( camera );
+        controls = new THREE.LeapPointerControls( camera , controller );
+
+        var material = new THREE.MeshNormalMaterial();
+        var geometry = new THREE.CubeGeometry( 10 , 10 , 10 );
+        var mesh = new THREE.Mesh( geometry , material );
+        scene.add( mesh );
+
+        
+        /*
+
+          SETTING UP STAR FIELD
+
+        */
+        for( var i = 0; i < 5; i ++ ){
+
+          geometry = new THREE.Geometry();
+
+          for( var j = 0 ; j < 1000; j++ ){
+
+            var vert = new THREE.Vector3();
+
+            vert.x = ( Math.random() - .5 ) * 1000;
+            vert.y = ( Math.random() - .5 ) * 1000;
+            vert.z = ( Math.random() - .5 ) * 1000;
+
+            geometry.vertices.push( vert );
+
+          }
+
+          var color = new THREE.Color();
+          color.r = i / 5 ;
+          color.g = ( 5 - i ) / 5 ;
+          color.b = 1;
+          
+          var material = new THREE.ParticleSystemMaterial({
+            size:6, 
+            color:color.getHex()
+          });
+
+          var particles = new THREE.ParticleSystem( geometry , material );
+
+          scene.add(particles);
+
+        }
+
+
+
+        initLoaders(); 
+
+        container = document.getElementById( 'container' );
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        container.appendChild( renderer.domElement );     
+
+
+        document.addEventListener( 'dragover', function ( event ) {
+
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'copy';
+
+        }, false );
+
+        document.addEventListener( 'dragenter', function ( event ) {
+
+          document.body.style.opacity = 0.5;
+
+        }, false );
+
+        document.addEventListener( 'dragleave', function ( event ) {
+
+          document.body.style.opacity = 1;
+
+        }, false );
+
+
+        document.addEventListener( 'drop', function ( event ) {
+
+          console.log( event );
+          event.preventDefault();
+
+          var file = event.dataTransfer.files[0];
+
+          var splits    = file.name.split( '.' );
+          var fileType  = splits[splits.length -1 ];
+
+          if( !fileType ){
+            loadError();
+          }
+
+          var reader = new FileReader();
+          reader.readAsBinaryString( file );
+
+          reader.onload = function (event) {
+          
+
+            var object;
+            if( fileType == 'obj' ){
+              object = OBJ_Loader.parse( event.target.result );
+            }
+
+            object.traverse( function ( child ) {
+
+              if ( child instanceof THREE.Mesh ) {
+
+                child.material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
+                child.materialNeedsUpdate = true;
+
+                child.geometry.computeBoundingSphere();
+                child.geometry.computeBoundingBox();
+                
+
+              }
+            });
+            scene.add( object );
+
+          }
+          
+          document.body.style.opacity = 1;
+
+        }, false );
+
+        controller.connect();
+
+
+      }
+
+      function initLoaders(){
+
+        OBJ_Loader = new THREE.OBJLoader();
+
+
+      }
+
+      function loadError(){
+        alert( 'there was an error loading your file' );
+      }
+
+      function animate(){
+
+        controls.update();
+        renderer.render( scene , camera );
+
+        requestAnimationFrame( animate );
+
+      }
+
+
+    </script>
+
+  </body>
+</html>
