@@ -55,6 +55,30 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
   this.target.add( this.targetIndicator );
   this.scene.add( this.target );
 
+  var downMat = new THREE.LineBasicMaterial({ color: 0x00ff00 , linewidth:10 });
+  var forwardMat = new THREE.LineBasicMaterial({ color: 0x0000ff, linewidth:10 });
+  var leftMat = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth:10 });
+
+  var downGeo = new THREE.Geometry();
+  downGeo.vertices.push( new THREE.Vector3() );
+  downGeo.vertices.push( new THREE.Vector3( 0 , -10 , 0 ));
+
+  var forwardGeo = new THREE.Geometry();
+  forwardGeo.vertices.push( new THREE.Vector3() );
+  forwardGeo.vertices.push( new THREE.Vector3( 0 ,0 , -10 ));
+
+
+  var leftGeo = new THREE.Geometry();
+  leftGeo.vertices.push( new THREE.Vector3() );
+  leftGeo.vertices.push( new THREE.Vector3( -10 , 0 , 0 ));
+
+  var down = new THREE.Line( downGeo , downMat ); 
+  var forward = new THREE.Line( forwardGeo , forwardMat ); 
+  var left = new THREE.Line( leftGeo , leftMat );
+  this.target.add( down );
+  this.target.add( forward );
+  this.target.add( left );
+
 
   // Creates the Anchor Object ( object hat will switch instantly )
   this.anchor = new THREE.Object3D();
@@ -62,7 +86,7 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
     new THREE.IcosahedronGeometry( this.size/200 , 1 ),
     new THREE.MeshBasicMaterial({ color:0x00ff00  }) 
   );
-  //this.anchor.add( this.anchorIndicator ); // Uncomment , so show where target is tweening
+  this.anchor.add( this.anchorIndicator ); // Uncomment , so show where target is tweening
   this.scene.add( this.anchor );
 
 
@@ -173,11 +197,71 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
 
   }
 
+  this.rotationMatrix = function( vec1 , vec2 ){
+
+    //Isaac - this is NOT a rotationMatrix method...
+    //this is right-handed only basis completion
+    //without checking that vec1 and vec2 are 
+    //orthogonal unit vectors.
+    //vec1 -> basis column 1
+    //vec2 -> basis column 2
+    //- Gabe
+    var a1 = new THREE.Vector3().fromArray( vec1 );
+    var a2 = new THREE.Vector3().fromArray( vec2 );
+    var a3 = a1.clone().cross( a2 );
+    /*
+    var matrix = new THREE.Matrix4( 
+      a1.x , a1.y , a1.z, 0,
+      a2.x , a2.y , a2.z, 0,
+      a3.x , a3.y , a3.z, 0,
+      0    , 0    , 0   , 1
+    )
+    */
+    var matrix = new THREE.Matrix4(
+      a1.x , a2.x , a3.x, 0,
+      a1.y , a2.y , a3.y, 0,
+      a1.z , a2.z , a3.z, 0,
+      0    , 0    , 0   , 1
+    )
+    return matrix; 
+
+  }
+
   this.update = function(){
 
     // Just incase this is overwritten somewhere else in the code
     this.object.matrixAutoUpdate = true;
 
+    var f = this.controller.frame();
+          
+    this.target.rotation.setFromRotationMatrix(camera.matrix);
+    
+    if( f.hands[0] ){
+      var h = f.hands[0];
+      //Identity rotation when hand is palm down, fingers forward
+      //(1) Make Initial Basis Inverse
+      var iniBasisInv = new THREE.Matrix4(
+          0,  0, -1,  0,
+          0, -1,  0,  0,
+          -1, 0,  0,  0,
+          0,  0,  0,  1
+          );
+      //(2) Derive hand basis
+      //col(0) = direction
+      //col(1) = palm normal
+      var pDNeg = h.palmNormal;
+      var hDNeg = h.direction;
+      var handBasis = this.rotationMatrix( h.direction , h.palmNormal );
+      //iniBasis.multiply( hMatrix );
+      //(3) Derive transformation from iniBasis to handBasis
+      var handTransform = new THREE.Matrix4();
+      handTransform.multiplyMatrices( handBasis , iniBasisInv );
+    
+      var hQuat = new THREE.Quaternion();
+      hQuat.setFromRotationMatrix( handTransform );
+      this.target.rotation._quaternion.multiply( hQuat )
+    }
+    
 
     /*
      
