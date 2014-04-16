@@ -6,11 +6,12 @@
     <script src="lib/three.js">                                 </script>
     <script src="lib/stats.min.js">                             </script>
     <script src="lib/dat.gui.min.js">                           </script>
-    
+   
     <script src="controls/LeapPaddleControls.js">               </script>
     <script src="controls/LeapSpringControls.js">               </script>
     <script src="controls/LeapTrackballControls.js">            </script>
     <script src="controls/LeapTwoHandControls.js">              </script>
+    <script src="controls/LeapPointerControls.js">              </script>
     
     <style>
 
@@ -57,7 +58,7 @@
       #descriptions{
 
         position: absolute;
-        width:803px;
+        width:1003px;
         top:34px;
         left:0px;
         background:rgba( 255 , 255 , 255 , .9 );
@@ -120,6 +121,7 @@
       <a class="control" onclick="switchControls('trackball', this )">Leap Trackball Controls</a>
       <a class="control" onclick="switchControls('twoHand'  , this )">Leap Two Hand Controls</a>
       <a class="control" onclick="switchControls('spring'   , this )">Leap Spring Controls</a>
+      <a class="control" onclick="switchControls('pointer'   , this )">Leap Pointer Controls</a>
     </div>
 
     <div id="descriptions">
@@ -193,6 +195,23 @@
           </ul>
         </p>
       </div>
+      <div class="description hide">
+        <h1> Leap Pointer Controls </h1>
+        <p>
+          TODO!
+          <ul>
+            <li><b> Dampening: </b> How fast the scene slows down</li>
+            <li><b> Size: </b> How far away the hand can move.</li>
+            <li><b> Spring Constant: </b> Variable to define physics of spring</li>
+            <li><b> Static Length: </b> Resting distance from target</li>
+            <li><b> Mass: </b> Variable to define physics of spring</li>
+            <li><b> Anchor to Target: </b> Rate at which the anchor tweens to the target</li>
+
+
+          </ul>
+        </p>
+      </div>
+
     </div>
 
 
@@ -247,6 +266,10 @@
         }else if( control == 'spring' ){
 
           activeControl = 3;
+
+        }else if( control == 'pointer' ){
+
+          activeControl = 4;
 
         }
 
@@ -327,6 +350,10 @@
         var springControls  = new THREE.LeapSpringControls( c , l , scene );
         controls.push( springControls );
 
+        // the Spring controls require a scene to add the markers to!
+        var pointerControls  = new THREE.LeapPointerControls( c , l );
+        controls.push( pointerControls );
+
 
         /*
 
@@ -351,6 +378,7 @@
         guiTrackballControls = gui.addFolder('Trackball Controls');
         guiTwoHandControls = gui.addFolder('Two Hand Controls');
         guiSpringControls = gui.addFolder('Spring Controls');
+        guiPointerControls = gui.addFolder('Pointer Controls');
 
         guiPaddleControls.add( GUI_PARAMS , 'resetCamera' );
         guiPaddleControls.add( paddleControls , 'weakDampening' , 0.8 , 1);
@@ -425,6 +453,31 @@
           world.add(particles);
         }
 
+        /*
+
+           SETTING UP CENTER OBJECT
+
+        */
+
+        var geo = new THREE.IcosahedronGeometry( SS / 100 , 2 );
+        var mat = new THREE.MeshPhongMaterial({
+          shading: THREE.FlatShading    
+        });
+
+        var mesh = new THREE.Mesh( geo , mat );
+        world.add( mesh );
+
+        var light = new THREE.DirectionalLight( 0xc0ffee , 1 );
+        light.position.set( 1 , 0 , -.5 );
+        world.add( light );
+
+        var light = new THREE.DirectionalLight( 0xcc44aa , 1 );
+        light.position.set( -1 , .3 , 0 );
+        world.add( light );
+
+        var light = new THREE.DirectionalLight( 0x7722cc , 1 );
+        light.position.set( 0, 1 , 0 );
+        world.add( light );
 
 
         /*
