@@ -26,17 +26,18 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
   this.dampening = ( object.dampening !== undefined ) ? object.dampening : .95;
 
   this.weakDampening    = .99;
-  this.strongDampening  = .8;
+  this.strongDampening  = .99;
 
   this.dampening        = this.strongDampening;
 
   this.size             = 120;
   this.springConstant   = 7;
   this.staticLength     = this.size ;
-  this.mass             = 1000;
+  this.mass             = 100;
 
   this.anchorToTarget   = 24;
 
+  this.handBasis        = new THREE.Matrix4();
 
   this.interactionBox   = {
     center: [ 0 , 0 , 0 ],
@@ -187,7 +188,7 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
 
       }else{
 
-        this.fingerIndicator.position.x = this.size * 10000;
+        //this.fingerIndicator.position.x = this.size * 10000;
 
       }
 
@@ -237,30 +238,32 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
     this.target.rotation.setFromRotationMatrix(camera.matrix);
     
     if( f.hands[0] ){
-      var h = f.hands[0];
-      //Identity rotation when hand is palm down, fingers forward
-      //(1) Make Initial Basis Inverse
-      var iniBasisInv = new THREE.Matrix4(
-          0,  0, -1,  0,
-          0, -1,  0,  0,
-          -1, 0,  0,  0,
-          0,  0,  0,  1
-          );
-      //(2) Derive hand basis
-      //col(0) = direction
-      //col(1) = palm normal
-      var pDNeg = h.palmNormal;
-      var hDNeg = h.direction;
-      var handBasis = this.rotationMatrix( h.direction , h.palmNormal );
-      //iniBasis.multiply( hMatrix );
-      //(3) Derive transformation from iniBasis to handBasis
-      var handTransform = new THREE.Matrix4();
-      handTransform.multiplyMatrices( handBasis , iniBasisInv );
-    
-      var hQuat = new THREE.Quaternion();
-      hQuat.setFromRotationMatrix( handTransform );
-      this.target.rotation._quaternion.multiply( hQuat )
+
+      if( f.hands[0].pinchStrength > .5 ){
+        var h = f.hands[0];
+       
+        this.handBasis = this.rotationMatrix( h.direction , h.palmNormal );
+       
+      }
     }
+
+    //Identity rotation when hand is palm down, fingers forward
+    //(1) Make Initial Basis Inverse
+    var iniBasisInv = new THREE.Matrix4(
+        0,  0, -1,  0,
+        0, -1,  0,  0,
+        -1, 0,  0,  0,
+        0,  0,  0,  1
+        );
+    //iniBasis.multiply( hMatrix );
+    //(3) Derive transformation from iniBasis to handBasis
+    var handTransform = new THREE.Matrix4();
+    handTransform.multiplyMatrices( this.handBasis , iniBasisInv );
+  
+    var hQuat = new THREE.Quaternion();
+    hQuat.setFromRotationMatrix( handTransform );
+    this.target.rotation._quaternion.multiply( hQuat );
+
     
 
     /*
