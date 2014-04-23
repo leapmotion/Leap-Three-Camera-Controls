@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <style>
+
+      #container{
+
+        background:#000;
+        position:absolute;
+        top:0px;
+        left:0px;
+
+      }
+
+    </style>
+  </head>
+  <body>    
+
+    <div id="container"></div>
+
+    <script src="../lib/leap.min.js"></script>
+    <script src="../lib/three.js"></script>
+
+
+    <script src="../controls/LeapWeightControls.js"></script>
+    
+    <script>
+
+      var container , camera , scener, renderer , stats;
+
+      var controller , controls;
+
+      init();
+      animate();
+
+      function init(){
+
+        controller = new Leap.Controller();
+     
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(
+          50 ,
+          window.innerWidth / window.innerHeight,
+          1 ,
+          5000
+        );
+
+        camera.position.z = 100;
+        console.log( camera );
+        controls = new THREE.LeapWeightControls( camera , controller );
+
+
+        /*
+
+          SETTING UP STAR FIELD
+
+        */
+        for( var i = 0; i < 5; i ++ ){
+
+          geometry = new THREE.Geometry();
+
+          for( var j = 0 ; j < 1000; j++ ){
+
+            var vert = new THREE.Vector3();
+
+            vert.x = ( Math.random() - .5 ) * 1000;
+            vert.y = ( Math.random() - .5 ) * 1000;
+            vert.z = ( Math.random() - .5 ) * 1000;
+
+            geometry.vertices.push( vert );
+
+          }
+
+          var color = new THREE.Color();
+          color.r = i / 5 ;
+          color.g = ( 5 - i ) / 5 ;
+          color.b = 1;
+          
+          var material = new THREE.ParticleSystemMaterial({
+            size:6, 
+            color:color.getHex()
+          });
+
+          var particles = new THREE.ParticleSystem( geometry , material );
+
+          scene.add(particles);
+
+        }
+        
+        container = document.getElementById( 'container' );
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        container.appendChild( renderer.domElement );      
+
+        controller.connect();
+
+
+      }
+
+
+      function animate(){
+
+        controls.update();
+        renderer.render( scene , camera );
+
+        requestAnimationFrame( animate );
+
+      }
+
+
+    </script>
+
+  </body>
+</html>

@@ -24,7 +24,7 @@
     this.rotationDampening        = .98;
     this.zoom                     = 40;
     this.zoomSpeed                = 0;
-    this.zoomSpeedRatio           = 0.1;
+    this.zoomSpeedRatio           = 0.01;
     this.zoomDampening            = .6;
     this.zoomCutoff               = .9;
 
@@ -43,52 +43,14 @@
 
         if( frame.hands[0].pinchStrength > .5 ){
 
-          var v = new THREE.Vector3( frame.hands[0].palmVelocity[0] / 1000. , frame.hands[0].palmVelocity[1]/1000. , 0 );
+          var v = new THREE.Vector3( frame.hands[0].palmVelocity[0] / 100. , frame.hands[0].palmVelocity[1]/100. , 0 );
           var d = new THREE.Vector3( 0 , 0 , -1 );
 
           var torque = new THREE.Vector3().crossVectors( v , d );
           torqueTotal.add( torque );
 
 
-
-
         }
-
-        //console.log( this.angularVelocity );
-        /*hand = frame.hands[0];
-        var hDirection  = new THREE.Vector3().fromArray( hand.direction );
-        var hNormal     = new THREE.Vector3().fromArray( hand.palmNormal );
-       // hDirection.applyMatrix4( this.rotatingObject.matrix );
-
-
-        for( var i = 0; i < hand.fingers.length; i++ ){
-
-          var finger = hand.fingers[i];
-
-          if( finger.extended ){
-
-            var fD = finger.direction;
-            var fV = finger.tipVelocity;
-            
-            // First off see if the fingers pointed
-            // the same direction as the hand
-            var fDirection = new THREE.Vector3().fromArray( fD );
-            var fMatch = fDirection.dot( hDirection );
-
-            // See if the finger velocity is in the same direction
-            // as the hand normal
-            var fVelocity = new THREE.Vector3().fromArray( fV );
-            var tmp = fVelocity.clone();
-            var vMatch = Math.abs( tmp.normalize().dot( hNormal ) );
-
-
-            fVelocity.multiplyScalar( (this.rotationSpeed  / 100000) * fMatch * vMatch );
-
-            var torque = new THREE.Vector3().crossVectors( fVelocity , hDirection );
-            torqueTotal.add( torque );
-
-          }*/
-
 
       }
 
@@ -96,56 +58,6 @@
 
     }
 
-
-    /*this.getTorque = function( frame ){
-
-      var torqueTotal = new THREE.Vector3();
-      
-      
-      if( frame.hands[0] ){
-
-        //console.log( this.angularVelocity );
-        hand = frame.hands[0];
-        var hDirection  = new THREE.Vector3().fromArray( hand.direction );
-        var hNormal     = new THREE.Vector3().fromArray( hand.palmNormal );
-       // hDirection.applyMatrix4( this.rotatingObject.matrix );
-
-
-        for( var i = 0; i < hand.fingers.length; i++ ){
-
-          var finger = hand.fingers[i];
-
-          if( finger.extended ){
-
-            var fD = finger.direction;
-            var fV = finger.tipVelocity;
-            
-            // First off see if the fingers pointed
-            // the same direction as the hand
-            var fDirection = new THREE.Vector3().fromArray( fD );
-            var fMatch = fDirection.dot( hDirection );
-
-            // See if the finger velocity is in the same direction
-            // as the hand normal
-            var fVelocity = new THREE.Vector3().fromArray( fV );
-            var tmp = fVelocity.clone();
-            var vMatch = Math.abs( tmp.normalize().dot( hNormal ) );
-
-
-            fVelocity.multiplyScalar( (this.rotationSpeed  / 100000) * fMatch * vMatch );
-
-            var torque = new THREE.Vector3().crossVectors( fVelocity , hDirection );
-            torqueTotal.add( torque );
-
-          }
-
-        }
-
-      }
-
-      return torqueTotal;
-
-    }*/
 
     this.getZoomForce = function( frame ){
 

@@ -1,7 +1,6 @@
 /**
  * @author cabbibo / http://cabbibo.com
  *
- *  Move your hand like a paddle
  *
  */
 
