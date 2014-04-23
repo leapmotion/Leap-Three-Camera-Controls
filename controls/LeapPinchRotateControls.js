@@ -24,6 +24,7 @@
     this.rotationDampening        = .98;
     this.zoom                     = 40;
     this.zoomSpeed                = 0;
+    this.zoomSpeedRatio           = 0.1;
     this.zoomDampening            = .6;
     this.zoomCutoff               = .9;
 
@@ -33,8 +34,70 @@
     this.rotation = new THREE.Quaternion();
     this.angularVelocity = new THREE.Vector3();
 
-
     this.getTorque = function( frame ){
+
+      var torqueTotal = new THREE.Vector3();
+      
+      
+      if( frame.hands[0] ){
+
+        if( frame.hands[0].pinchStrength > .5 ){
+
+          var v = new THREE.Vector3( frame.hands[0].palmVelocity[0] / 1000. , frame.hands[0].palmVelocity[1]/1000. , 0 );
+          var d = new THREE.Vector3( 0 , 0 , -1 );
+
+          var torque = new THREE.Vector3().crossVectors( v , d );
+          torqueTotal.add( torque );
+
+
+
+
+        }
+
+        //console.log( this.angularVelocity );
+        /*hand = frame.hands[0];
+        var hDirection  = new THREE.Vector3().fromArray( hand.direction );
+        var hNormal     = new THREE.Vector3().fromArray( hand.palmNormal );
+       // hDirection.applyMatrix4( this.rotatingObject.matrix );
+
+
+        for( var i = 0; i < hand.fingers.length; i++ ){
+
+          var finger = hand.fingers[i];
+
+          if( finger.extended ){
+
+            var fD = finger.direction;
+            var fV = finger.tipVelocity;
+            
+            // First off see if the fingers pointed
+            // the same direction as the hand
+            var fDirection = new THREE.Vector3().fromArray( fD );
+            var fMatch = fDirection.dot( hDirection );
+
+            // See if the finger velocity is in the same direction
+            // as the hand normal
+            var fVelocity = new THREE.Vector3().fromArray( fV );
+            var tmp = fVelocity.clone();
+            var vMatch = Math.abs( tmp.normalize().dot( hNormal ) );
+
+
+            fVelocity.multiplyScalar( (this.rotationSpeed  / 100000) * fMatch * vMatch );
+
+            var torque = new THREE.Vector3().crossVectors( fVelocity , hDirection );
+            torqueTotal.add( torque );
+
+          }*/
+
+
+      }
+
+      return torqueTotal;
+
+    }
+
+
+    /*this.getTorque = function( frame ){
 
       var torqueTotal = new THREE.Vector3();
       
@@ -82,7 +145,7 @@
 
       return torqueTotal;
 
-    }
+    }*/
 
     this.getZoomForce = function( frame ){
 
@@ -90,40 +153,14 @@
 
       if( frame.hands[0] ){
 
-        var hand = frame.hands[0];
-        var handNormal = new THREE.Vector3().fromArray( hand.palmNormal );
+        if( frame.hands[0].pinchStrength > .5 ){
 
-        if( Math.abs( handNormal.z ) > .8 ){
 
-          this.rotationDampening = .7;
-          var palmVelocity = new THREE.Vector3().fromArray( hand.palmVelocity );
+          var velocity = frame.hands[0].palmVelocity;
+          zoomForce = -velocity[2]*this.zoomSpeedRatio;
 
-          for( var i = 0; i < hand.fingers.length; i++ ){
-
-            var finger = hand.fingers[i];
-
-            if( finger.extended ){
-
-              var fD = finger.direction;
-              var fV = finger.tipVelocity;
-              
-              // First off see if the fingers pointed
-              // the same direction as the hand
-              var fDirection = new THREE.Vector3().fromArray( fD );
-              
-              var match = fDirection.dot( handNormal );
-
-              // because fingers should be perp to handNormal, make the answer 1 - match
-              var force = 1 - match;
-
-              var fVelocity = new THREE.Vector3().fromArray( fV );
-          
-              var dir = fVelocity.dot( new THREE.Vector3( 0 , 0 , 1 ) );
-              zoomForce -= dir / 100;
-           
-            }
-
-          }
+          this.rotationDampening = .8;
+        
 
         }else{
           this.rotationDampening = .98;
@@ -194,7 +231,7 @@
       }
 
       this.angularVelocity.add( torque );
-      this.angularVelocity.multiplyScalar( dampening );
+      this.angularVelocity.multiplyScalar( this.rotationDampening );
            
       var angularDistance = this.angularVelocity.clone().multiplyScalar( dTime );
 
