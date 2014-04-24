@@ -79,7 +79,7 @@ THREE.LeapEyeLookControls = function ( object , controller , scene , params , do
       }
 
       this.lookForce.multiplyScalar( 1 / this.lookMass );
-      this.eyeForce.multiplyScalar( -1 / this.eyeMass );
+      this.eyeForce.multiplyScalar( 1 / this.eyeMass );
       
       this.lookForce.applyQuaternion( this.object.quaternion );
       this.eyeForce.applyQuaternion( this.object.quaternion );
