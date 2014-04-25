@@ -1,0 +1,102 @@
+<html>
+  <head>
+    <style>
+
+      #container{
+
+        background:#000;
+        position:absolute;
+        top:0px;
+        left:0px;
+
+      }
+
+    </style>
+  </head>
+  <body>    
+
+    <div id="container"></div>
+
+    <script src="../lib/leap.min.js"></script>
+    <script src="../lib/three.js"></script>
+
+    <script src="../controls/LeapEyeLookControls.js"></script>
+    <script src="../controls/LeapPaddleControls.js"></script>
+    <script src="../controls/LeapPinchRotateControls.js"></script>
+    <script src="../controls/LeapPointerControls.js"></script>
+    <script src="../controls/LeapSpringControls.js"></script>
+    <script src="../controls/LeapTrackballControls.js"></script>
+    <script src="../controls/LeapTwoHandControls.js"></script>
+    <script src="../controls/LeapWeightControls.js"></script>
+    <script src="../controls/LeapCameraControls.js"></script>
+    
+    <script>
+
+      var container , camera , scener, renderer , stats;
+
+      var controller , controls;
+
+      init();
+      animate();
+
+      function init(){
+
+        controller = new Leap.Controller();
+     
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(
+          50 ,
+          window.innerWidth / window.innerHeight,
+          1 ,
+          5000
+        );
+
+        camera.position.z = 100;
+        console.log( camera );
+        
+        controls = new LeapCameraControls( camera , controller , scene , 'twohand');
+
+
+        var material = new THREE.MeshNormalMaterial();
+        var geometry = new THREE.CubeGeometry( 20 , 20 , 20 );
+        for( var i = 0; i < 100; i ++ ){
+
+          var mesh = new THREE.Mesh( geometry , material );
+          mesh.position.x = ( Math.random() - .5 ) * 500;
+          mesh.position.y = ( Math.random() - .5 ) * 500;
+          mesh.position.z = ( Math.random() - .5 ) * 500;
+
+          mesh.rotation.x = Math.random() * Math.PI;
+          mesh.rotation.y = Math.random() * Math.PI;
+          mesh.rotation.z = Math.random() * Math.PI;
+
+          scene.add( mesh );
+
+        }
+        
+        container = document.getElementById( 'container' );
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        container.appendChild( renderer.domElement );      
+
+        controller.connect();
+
+
+      }
+
+
+      function animate(){
+
+        controls.update();
+        renderer.render( scene , camera );
+
+        requestAnimationFrame( animate );
+
+      }
+
+
+    </script>
+
+  </body>
+</html>

@@ -5,11 +5,11 @@
  *
  */
 
-THREE.LeapPaddleControls = function ( object , controller , params , domElement ) {
+THREE.LeapPaddleControls = function ( cameraModel, object , controller , params) {
 
-  this.object     = object;
-  this.controller = controller;
-  this.domElement = ( domElement !== undefined ) ? domElement : document;
+  this.cameraModel = cameraModel;
+  this.object      = object;
+  this.controller  = controller;
 
   // API
   
@@ -111,23 +111,11 @@ THREE.LeapPaddleControls = function ( object , controller , params , domElement 
            this.velocity.normalize().multiplyScalar( this.maxVelocity );
 
         }
-
+        
+        this.cameraModel.translate(this.velocity, true);
       }
-
-      // Convert from straight X , Y , Z,
-      // to the X , Y , and Z of the camera
-      var vTemp = this.velocity.clone();
-      vTemp.applyQuaternion( this.object.quaternion );
-      this.object.position.add( vTemp );
-
-      this.velocity.multiplyScalar( this.dampening );
-
     }
-
-    
-
   }
-
 }
 
 
