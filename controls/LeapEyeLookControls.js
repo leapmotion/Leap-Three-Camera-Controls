@@ -58,7 +58,6 @@ THREE.LeapEyeLookControls = function ( object , controller , scene , params , do
 
       if( this.frame.hands[0] ){
 
-
         if( this.frame.hands[0].type == 'right' ){
           this.updateEyeForce( this.frame.hands[0] );
         }else if( this.frame.hands[0].type == 'left' ){
@@ -68,7 +67,6 @@ THREE.LeapEyeLookControls = function ( object , controller , scene , params , do
       }
 
       if( this.frame.hands[1] ){
-
 
         if( this.frame.hands[1].type == 'right' ){
           this.updateEyeForce( this.frame.hands[1] );
@@ -103,38 +101,41 @@ THREE.LeapEyeLookControls = function ( object , controller , scene , params , do
 
   }
 
-   this.updateEyeForce = function( hand ){
+  this.updateEyeForce = function( hand ){
 
     var force = new THREE.Vector3();
+    
     if( hand.pinchStrength > .5 ){
-      console.log('eye');
       force = new THREE.Vector3().fromArray( hand.palmVelocity );
-
     }
+
     this.eyeForce.add( force );
 
   }
 
   this.updateLookForce = function( hand ){
 
-    console.log
     var force = new THREE.Vector3();
-    if( hand.pinchStrength > .5 ){
 
-      console.log('look');
+    if( hand.pinchStrength > .5 ){
       force = new THREE.Vector3().fromArray( hand.palmVelocity );
     }
+
     this.lookForce.add( force );
 
   }
 
 
   this.addLookMarker = function( mesh ){
+
     this.look.add( mesh );
+
   }
 
   this.removeLookMarker = function( mesh ){
+
     this.look.remove( mesh );
+
   }
 
   this.leapToScene = function( position , clamp ){
