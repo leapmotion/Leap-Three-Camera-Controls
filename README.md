@@ -373,9 +373,6 @@ Using the following parameters:
   - eyeDampening:   Tells us how quickly the eye object will slow down
 
 
-
-
-
 Spring Controls
 -----
 
@@ -398,3 +395,5 @@ Pinch Rotate Controls
 
 First Person Controls
 -----
+
+TODO
