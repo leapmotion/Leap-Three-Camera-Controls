@@ -12,28 +12,31 @@ THREE.LeapEyeLookControls = function ( object , controller , scene , params , do
   this.domElement = ( domElement !== undefined ) ? domElement : document;
 
   // API
+ 
+  this.lookSize       = 1;
+  this.lookMass       = 1;
+  this.lookSpeed      = .001;
+  this.lookDampening  = .9;
+
+  this.eyeSize        = 1;
+  this.eyeMass        = 1;
+  this.eyeSpeed       = .001;
+  this.eyeDampening   = .9;
+
   
-  this.size = 100;
-
-
+  
   this.look         = new THREE.Object3D();
-  
-  this.lookMass     = 1;
-  this.lookSpeed    = .001;
+
   this.lookPosition = new THREE.Vector3( 0 , 0 , this.size);
   this.lookVelocity = new THREE.Vector3();
   this.lookForce    = new THREE.Vector3();
 
-  this.eyeMass      = 1;
-  this.eyeSpeed     = .001;
   this.eyePosition  = new THREE.Vector3();
   this.eyeVelocity  = new THREE.Vector3();
   this.eyeForce     = new THREE.Vector3();
  
   this.object.position  = this.eyePosition;
   this.look.position    = this.lookPosition;
-
-  this.dampening = .9;
 
   this.scene.add( this.look );
 
@@ -94,8 +97,8 @@ THREE.LeapEyeLookControls = function ( object , controller , scene , params , do
       
       this.object.lookAt( this.lookPosition );
    
-      this.lookVelocity.multiplyScalar( this.dampening );
-      this.eyeVelocity.multiplyScalar( this.dampening );
+      this.lookVelocity.multiplyScalar( this.lookDampening );
+      this.eyeVelocity.multiplyScalar( this.eyeDampening );
 
     }
 
@@ -107,6 +110,7 @@ THREE.LeapEyeLookControls = function ( object , controller , scene , params , do
     
     if( hand.pinchStrength > .5 ){
       force = new THREE.Vector3().fromArray( hand.palmVelocity );
+      force.multiplyScalar( this.eyeSize );
     }
 
     this.eyeForce.add( force );
@@ -119,6 +123,7 @@ THREE.LeapEyeLookControls = function ( object , controller , scene , params , do
 
     if( hand.pinchStrength > .5 ){
       force = new THREE.Vector3().fromArray( hand.palmVelocity );
+      force.multiplyScalar( this.lookSize );
     }
 
     this.lookForce.add( force );

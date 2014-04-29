@@ -248,13 +248,22 @@ Pairings:
   - A Game with a single scene that we are always looking at
   - A quick addition to visual experiments
 
-controls/LeapPointerControls.js
-
-Called using 
+Called using: 
 
 ```
-var controls =  THREE.LeapPointerControls( camera , controller );
+<!-- Include Script -->
+<script src="path/to/controls/LeapPointerControls.js"></script>
 
+// Inside Init Function
+var controls = THREE.LeapPointerControls( camera , controller );
+
+controls.size       = 100;
+controls.speed      = .01;
+controls.dampening  = .99;
+controls.target     = new THREE.Vector3( 0 , 100 , 0 );
+
+// Inside Animate Function
+controls.update;
 ```
 
 Using the following parameters:
@@ -270,6 +279,102 @@ Using the following parameters:
 
   - target:     Tells us where the camera is looking. A THREE.Vector3(), 
                 target basically defines the center of the scene
+
+
+Eye Look Controls
+-----
+
+Eye Look Controls are very similar to the Pointer controls. Infact when 
+you use your right hand, they are exactly the same. The biggest difference
+is that when you use your left hand, you dynamically move the target.
+This leads to the ability to easily move around a scene, but always have a 
+specific point you are focused on. Also, all movements are relative,
+rather than absolute.
+
+
+Pros:
+
+  - Always looking at the same place, so its hard to get out of control
+  - movements feel smoothish
+  - Relative movements allow for the exploration of the entire scene 
+
+Cons:
+
+  - Moving camera near poles results in some weirdness
+  - Uses pinch, which removes the ability to use it for other gestures
+  - Relative movement means that you can get very far away from yourr
+    target, leading to depth being difficult to judge
+  - Difficult to move through an entire scene quickly
+
+
+Pairings:
+  
+  - Slowly examining a full scene
+  - 3D Modeling camera controls
+  - A quick addition to visual experiments
+
+
+Called using: 
+
+```
+<!-- Include Script -->
+<script src="path/to/controls/LeapEyeLookControls.js"></script>
+
+// Inside Init Function
+var controls = THREE.LeapEyeLookControls( camera , controller , scene );
+
+controls.lookSize       = 10;
+controls.lookMass       = 10;
+controls.lookSpeed      = 10;
+controls.lookDampening  = .9;
+
+controls.eyeSize        = 10;
+controls.eyeMass        = 10;
+controls.eyeSpeed       = 10;
+controls.eyeDampening   = .9;
+
+// If you want to have a marker for your eye
+// Which you probably do...
+
+var geo   = new THREE.CubeGeometry( 1 , 1 , 1 );
+var mat   = new THREE.MeshNormalMaterial();
+var mesh  = new THREE.Mesh( geo , mat );
+
+controls.addLookMarker( mesh );
+
+// Inside Animate Function
+controls.update;
+```
+
+Using the following parameters:
+
+  - lookSize:       Tells us how big the movements will be for the look object
+                    by adding bigger or smaller numbers to the force
+
+  - lookMass:       Tells us more about how the look object will move by giving
+                    it different mass. A smaller mass with fling around the field
+                    while a larger mass will be slower / harder to move
+
+  - lookSpeed:      Tells us how much the speed will be multiplied by when we 
+                    determine the final speed to be added to the position
+
+  - lookDampening:  Tells us how quickly the look object will slow down
+
+  - eyeSize:        Tells us how big the movements will be for the eye object
+                    by adding bigger or smaller numbers to the force
+
+  - eyeMass:        Tells us more about how the eye object will move by giving
+                    it different mass. A smaller mass with fling around the field
+                    while a larger mass will be slower / harder to move
+
+  - eyeSpeed:       Tells us how much the speed will be multiplied by when we 
+                    determine the final speed to be added to the position
+
+  - eyeDampening:   Tells us how quickly the eye object will slow down
+
+
+
+
 
 Spring Controls
 -----
@@ -289,8 +394,6 @@ Paddle Controls
 Pinch Rotate Controls
 -----
 
-Eye Look Controls
------
 
 
 First Person Controls
