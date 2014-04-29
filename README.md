@@ -215,5 +215,83 @@ Full Code Example
 More Information About Controls
 =====
 
-Coming soon!
+This section is about what each of the controls are the most useful
+for. It will also try to include descriptions of what works, what
+doesn't work, and what will hopefully one day work.
 
+Pointer Controls
+-----
+
+The pointer controls basically has the camera always pointing at a 
+'target', when you pinch, you begin moving the camera around the object,
+and when you release, the camera will stop moving.
+
+Pros:
+
+  - Always looking at the same place, so its hard to get out of control
+  - movements feel smoothish
+  - Absolute positioning means that when comparing to the leap, 
+    the position will always make sense
+
+Cons:
+
+  - Moving camera near poles results in some weirdness
+  - Because there is only a single target, hard to move around scene
+    unless the target is dynamically updated
+  - Uses pinch, which removes the ability to use it for other gestures
+
+
+Pairings:
+  
+  - Pointer controls work well with a single examined object
+  - 3D Modeling camera controls
+  - A Game with a single scene that we are always looking at
+  - A quick addition to visual experiments
+
+controls/LeapPointerControls.js
+
+Called using 
+
+```
+var controls =  THREE.LeapPointerControls( camera , controller );
+
+```
+
+Using the following parameters:
+
+  - size:       Tells us how big the motions will be, basically the spherical
+                distance from the target
+
+  - dampening:  Tells us how fast the camera will slow down once we release
+                it. also how 'smoothed' the movement will be
+
+  - speed:      Tells us how fast the camera will follow our hand movements.
+                This number should be between 0 and 1
+
+  - target:     Tells us where the camera is looking. A THREE.Vector3(), 
+                target basically defines the center of the scene
+
+Spring Controls
+-----
+
+Two Hand Controls
+-----
+
+Pointer Controls
+-----
+
+Trackball Controls
+-----
+
+Paddle Controls
+-----
+
+Pinch Rotate Controls
+-----
+
+Eye Look Controls
+-----
+
+
+First Person Controls
+-----

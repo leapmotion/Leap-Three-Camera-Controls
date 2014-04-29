@@ -10,17 +10,21 @@ THREE.LeapPointerControls = function ( object , controller , params , domElement
   this.controller = controller;
   this.domElement = ( domElement !== undefined ) ? domElement : document;
 
+  this.velocity = new THREE.Vector3();
+
   // API
   
   this.enable = true;
 
   this.velocity = new THREE.Vector3();
 
-  this.size = 100;
-  this.target = new THREE.Vector3();
+  this.size       = 100;
+  this.speed      = .1;
+  this.dampening  = .9;
+
+  this.target     = new THREE.Vector3();
 
 
-  this.dampening = .9;
 
   
   this.update = function(){
@@ -44,12 +48,8 @@ THREE.LeapPointerControls = function ( object , controller , params , domElement
 
           var pos = this.leapToScene(this.frame.hands[0].palmPosition);
           var dir = new THREE.Vector3().fromArray( this.frame.hands[0].palmNormal );
-
-          //this.velocity = this.object.position.clone().sub( pos ).multiplyScalar( .1 );
-          this.velocity = pos.clone().sub( this.object.position).multiplyScalar( .1 );
-          //this.object.position.add( dif.multiplyScalar( .1 ) );
-          //this.object.lookAt( new THREE.Vector3() );
-          //this.object.lookAt( pos.clone().add( dir ) );
+          var p = this.object.position;
+          this.velocity = pos.clone().sub( p ).multiplyScalar( this.speed );
 
         }
 
