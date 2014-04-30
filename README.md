@@ -24,6 +24,7 @@ Whats in this Readme?
   - Basic Implementation
   - A full example from start to finish!
   - Further explanations of each individual camera controls
+  - How you can help!
 
 Useful Resources
 =====
@@ -558,10 +559,10 @@ Called using:
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapTrackballControls.js"></script>
+<script src="path/to/controls/LeapPinchRotateControls.js"></script>
 
 // Inside Init Function
-var controls = THREE.LeapTrackballControls( camera , controller );
+var controls = THREE.LeapPinchRotateControls( camera , controller );
 
 controls.rotationSpeed            =   10;
 controls.rotationLowDampening     =  .98;
@@ -598,65 +599,61 @@ Using the following parameters:
 Paddle Controls
 -----
 
-Pinch Rotate Controls are nearly Identical to the Trackball controls, except that they use pinch in order to move the camera. As well, they have the ability to zoom in and out, by simply pinching and moving inwards or outwards. In order to define when this happens, it looks at the movement in Z vs the movement in X and Y, and compares the too to see if there is more movement in Z than XY or vis versa
+Paddle Controls Let you 'Paddle' Around a scene, the way that you would paddle 
+through water. Pretty cool huh?
 
 Pros:
 
   - Supersmooth. 
+  - Makes you feel a bit like a god
   - No Gimbal Lock!
+  - No Pinch!
 
 Cons:
 
-  - Only moves around single point
+  - No Rotate...
   - Controls take some getting used to for some people
-  - No clear up vector, which leads to possible deorientation
-  - Uses Pinch :-( 
+  
 
 Pairings:
   
-  - 3D Modeling camera controls
-  - A quick addition to visual experiments
-
+  - Great for moving a scene where you want don't want to rotate
+  - Great for 'infinite' terrains
+  - Great to combine with other methods of control!
 
 Called using: 
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapTrackballControls.js"></script>
+<script src="path/to/controls/LeapPaddleControls.js"></script>
 
 // Inside Init Function
-var controls = THREE.LeapTrackballControls( camera , controller );
+var controls = THREE.LeapPaddleControls( camera , controller );
 
-controls.rotationSpeed            =   10;
-controls.rotationLowDampening     =  .98;
-controls.rotationHighDampening    =   .7;
-controls.zoom                     =   40;
-controls.zoomDampening            =   .6;
-controls.zoomSpeedRatio           =   10;
-controls.zoomCutoff               =   .9;
-controls.zoomEnabled              = true;
-controls.zoomVsRotate             =    1;
-controls.minZoom                  =   20;
-controls.maxZoom                  =   80;
- 
+controls.weakDampening        = .99;
+controls.strongDampening      = .9;
+controls.fingerMatchCutoff    = .5;
+controls.velocityMatchCutoff  =.5;
+controls.fingerMatchPower     = 5;
+controls.velocityMatchPower   = 5;
+controls.movementSpeed        = 1;
+controls.maxSpeed             = 10; 
+
+
 // Inside Animate Function
 controls.update();
 ```
 
 Using the following parameters:
 
-  - rotationSpeed:          Tells us the speed of the rotation
-  - rotationLowDampening:   Tells us how quickly the rotation will slow down when in moving state
-  - rotationHighDampening:  Tells us how quickly the rotation will slow down when in stopping state
-  - zoomEnabled:            Tells us if zooming is enabled
-  - zoom:                   Tells us how close we are to the center
-  - zoomDampening:          Tells us how quickly the zoom will slow down
-  - zoomSpeedRatio:         Tells us how quickly the zoom moves compared to palm
-  - zoomCutoff:             Tells us how forward facing our palm needs to be to zoom
-  - zoomVsRotate:           Tells us how much more we need to be moving in Z than XY to start zooming, vs rotating
-  - minZoom:                Tells us the closest we can be
-  - maxZoom:                Tells us the farthest we can be
-
+  - weakDampening:          Tells us dampening when there is a hand in field
+  - strongDampening:        Tells us dampening when there is no hand in field
+  - fingerMatchCutoff:      Tells us the number at which we will stop moving if the finger direction does not match the hand direction
+  - velocityMatchCutoff:    Tells us the number at which we will stop moving if the finger velocity does not match the hand normal
+  - fingerMatchPower:       Tells us the amount that the fingerMatch will be raised to to give a higher or lower turn on for movement
+  - velocityMatchPower:     Tells us the amount that the velocityMatch will be raised to to give a higher or lower turn on for movement
+  - movementSpeed:          Tells us how fast we are moving, by multiplying the force
+  - maxSpeed:               Tells us what we will limit the cameras speed to
 
 
 Two Hand Controls
@@ -716,3 +713,11 @@ First Person Controls
 -----
 
 TODO
+
+
+What You can Do To Help
+=======
+
+  - Let me know about comments / suggestions / complaints etc via issues
+  - Contribute your own controls via a pull request
+  - Tell your friends, and get more people user testing / involved!
