@@ -30,7 +30,7 @@ Useful Resources
 
 
 - [ The github page for this repo ]( http://leapmotion.github.io/Leap-Three-Camera-Controls/ )
-- [ three.js library ]( http://threejs.org/ );
+- [ three.js library ]( http://threejs.org/ )
 - [ Example of three.js Camera Control ]( http://threejs.org/examples/#misc_controls_trackball )
 - [ TODO: Really Pretty Tech Demo of Nvidias Open Source Driver Call Graph ]()
 
@@ -51,7 +51,6 @@ Include Scripts
 <script src="path/to/three.js"></script>
 <script src="path/to/leap.js"></script>
 <script src="path/to/LeapSpringControls.js"></script>
-
 ```
 
 The next thing we will do is set up our controls. We are going to 
@@ -71,7 +70,6 @@ Initializing Controls
 -----
 
 ```
-
 // our leap controller
 var controller;
 
@@ -104,7 +102,6 @@ function init(){
   var controls = new THREE.LeapSpringControls( camera , controller , scene );
 
 }
-
 ```
 
 It is important to note that the LeapSpringControls take in a camera , a controller ,
