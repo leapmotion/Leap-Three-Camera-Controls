@@ -44,7 +44,9 @@
     //API
 
     this.rotationSpeed            = 10;
-    this.rotationDampening        = .98;
+    this.rotationLowDampening     = .98;
+    this.rotationHighDampening    = .7;
+    this.rotationDampeningCutoff  = .9;
     
     this.zoomEnabled              = true;
     this.zoom                     = 40;
@@ -108,6 +110,24 @@
 
     }
 
+    this.getRotationDampening = function( frame ){
+
+      var dampening = this.rotationLowDampening;
+
+      if( frame.hands[0] ){
+
+        var handNormal = frame.hands[0].palmNormal;
+
+        // only dampening if I'm giving a 'STOP' symbol to the camera
+        if( -handNormal[2] > this.rotationDampeningCutoff ){
+          dampening = this.rotationHighDampening;
+        }
+      }
+
+      return dampening;
+
+    }
+
     this.getZoomForce = function( frame ){
 
       var zoomForce = 0;
@@ -117,9 +137,8 @@
         var hand = frame.hands[0];
         var handNormal = new THREE.Vector3().fromArray( hand.palmNormal );
 
-        if( Math.abs( handNormal.z ) > .8 ){
+        if( Math.abs( handNormal.z ) > this.zoomCutoff ){
 
-          this.rotationDampening = .7;
           var palmVelocity = new THREE.Vector3().fromArray( hand.palmVelocity );
 
           for( var i = 0; i < hand.fingers.length; i++ ){
@@ -148,14 +167,8 @@
             }
 
           }
-
-        }else{
-          this.rotationDampening = .98;
         }
-      }else{
-        this.rotationDampening = .98;
-      }
-
+      } 
       return zoomForce;
 
     }
@@ -167,8 +180,10 @@
 
       var frame     = this.controller.frame();
 
-      var torque    = this.getTorque(     frame );
+      var torque    = this.getTorque( frame );
       var dTime     = this.clock.getDelta();
+
+      var rotationDampening   = this.getRotationDampening( frame );
       
       if( this.zoomEnabled ){
 
@@ -194,7 +209,7 @@
       }
 
       this.angularVelocity.add( torque );
-      this.angularVelocity.multiplyScalar( this.rotationDampening );
+      this.angularVelocity.multiplyScalar( rotationDampening );
            
       var angularDistance = this.angularVelocity.clone().multiplyScalar( dTime );
 

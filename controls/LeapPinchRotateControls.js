@@ -1,6 +1,7 @@
 
   /* 
    * Leap Pinch Rotate Controls
+   * Author: @Cabbibo
    *
    * http://github.com/leapmotion/Leap-Three-Camera-Controls/    
    *    
@@ -28,8 +29,6 @@
 
     this.clock      = new THREE.Clock(); // for smoother transitions
 
-    this.speed = 10;
-
     // Place the camera wherever you want it
     // but use a rotating object to place
     this.rotatingObject = new THREE.Object3D();
@@ -48,6 +47,7 @@
     this.zoomSpeedRatio           = 0.01;
     this.zoomDampening            = .6;
     this.zoomCutoff               = .9;
+    this.zoomEnabled              = true;
 
     this.minZoom                  = 20;
     this.maxZoom                  = 80;
@@ -140,6 +140,8 @@
       this.object.matrixAutoUpdate = false; 
 
       var frame     = this.controller.frame();
+      
+      var dTime     = this.clock.getDelta();
 
       var torque    = this.getTorque(     frame );
       var zoomForce = this.getZoomForce(  frame );
