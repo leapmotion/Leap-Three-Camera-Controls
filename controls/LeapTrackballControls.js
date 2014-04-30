@@ -275,5 +275,4 @@
     z -= sceneSize;
 
     return new THREE.Vector3( x , y , z );
-
   }

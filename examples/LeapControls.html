@@ -20,14 +20,6 @@
     <script src="../lib/leap.min.js"></script>
     <script src="../lib/three.js"></script>
 
-    <script src="../controls/LeapEyeLookControls.js"></script>
-    <script src="../controls/LeapPaddleControls.js"></script>
-    <script src="../controls/LeapPinchRotateControls.js"></script>
-    <script src="../controls/LeapPointerControls.js"></script>
-    <script src="../controls/LeapSpringControls.js"></script>
-    <script src="../controls/LeapTrackballControls.js"></script>
-    <script src="../controls/LeapTwoHandControls.js"></script>
-    <script src="../controls/LeapWeightControls.js"></script>
     <script src="../controls/LeapCameraControls.js"></script>
     
     <script>
@@ -55,7 +47,10 @@
         camera.position.z = 100;
         console.log( camera );
         
-        controls = new LeapCameraControls( camera , controller , scene , 'twohand');
+        controls = new LeapCameraControls( camera , controller , scene);
+  
+        controls.add('pinchRotate', new Control(Activations.pinch(0.1), Interpreters.palmOrbit(), 'rotation'));
+        // controls.add('ipinchtrans', new Control(Activations.inversePinch(5), Interpreters.palmPosition(), 'translate'));
 
 
         var material = new THREE.MeshNormalMaterial();
