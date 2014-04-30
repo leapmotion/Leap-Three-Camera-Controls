@@ -18,7 +18,7 @@
     <div id="container"></div>
 
     <script src="../lib/leap.min.js"></script>
-    <script src="../lib/three.js"></script>
+    <script src="../lib/three.min.js"></script>
 
     <script src="../controls/LeapEyeLookControls.js"></script>
     
@@ -45,7 +45,6 @@
         );
 
         camera.position.z = 100;
-        console.log( camera );
         controls = new THREE.LeapEyeLookControls( camera , controller , scene );
 
         var lookVertShader = [
@@ -124,7 +123,7 @@
         }
 
         var material = new THREE.MeshNormalMaterial();
-        var geometry = new THREE.CubeGeometry( 20 , 20 , 20 );
+        var geometry = new THREE.BoxGeometry( 20 , 20 , 20 );
         for( var i = 0; i < 100; i ++ ){
 
           var mesh = new THREE.Mesh( geometry , material );

@@ -18,7 +18,7 @@
     <div id="container"></div>
 
     <script src="../lib/leap.min.js"></script>
-    <script src="../lib/three.js"></script>
+    <script src="../lib/three.min.js"></script>
 
     <script src="../controls/LeapTwoHandControls.js"></script>
     
@@ -88,7 +88,7 @@
         }
 
         var material = new THREE.MeshNormalMaterial();
-        var geometry = new THREE.CubeGeometry( 20 , 20 , 20 );
+        var geometry = new THREE.BoxGeometry( 20 , 20 , 20 );
         for( var i = 0; i < 100; i ++ ){
 
           var mesh = new THREE.Mesh( geometry , material );
