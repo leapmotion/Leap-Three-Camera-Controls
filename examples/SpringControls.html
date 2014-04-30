@@ -46,11 +46,37 @@
 
         camera.position.z = 100;
         console.log( camera );
+
+        /*
+
+           Setting up controls
+
+        */
+
         controls = new THREE.LeapSpringControls( camera , controller , scene );
+
+        controls.dampening      = .75;
+        controls.size           = 120;
+        controls.springConstant =   1;
+        controls.mass           = 100;
+        controls.anchorSpeed    =  .1;
+        controls.staticLength   = 100;
+
+        var geo = new THREE.IcosahedronGeometry( 5, 2 ); 
+        var mat = new THREE.MeshNormalMaterial(); 
+
+        var targetMesh  = new THREE.Mesh( geo , mat );
+        var anchorMesh  = new THREE.Mesh( geo , mat );
+        var handMesh    = new THREE.Mesh( geo , mat );
+
+        controls.addTargetMarker( targetMesh );
+        controls.addAnchorMarker( anchorMesh );
+        controls.addHandMarker(     handMesh );
 
 
         var material = new THREE.MeshNormalMaterial();
         var geometry = new THREE.CubeGeometry( 20 , 20 , 20 );
+        
         for( var i = 0; i < 100; i ++ ){
 
           var mesh = new THREE.Mesh( geometry , material );

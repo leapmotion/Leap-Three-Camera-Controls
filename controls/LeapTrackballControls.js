@@ -1,6 +1,7 @@
    
   /* 
-   * Leap Eye Look Controls
+   * Leap Trackball Controls
+   * Author: @Cabbibo
    *
    * http://github.com/leapmotion/Leap-Three-Camera-Controls/    
    *    
@@ -28,8 +29,6 @@
 
     this.clock      = new THREE.Clock(); // for smoother transitions
 
-    this.speed = 10;
-
     // Place the camera wherever you want it
     // but use a rotating object to place
     this.rotatingObject = new THREE.Object3D();
@@ -39,12 +38,16 @@
 
     this.rotatingObject.add( this.rotatingCamera );
 
-    //console.log( rotatingObject );
+    this.zoomSpeed                = 0;
+    
+    
+    //API
 
     this.rotationSpeed            = 10;
     this.rotationDampening        = .98;
+    
+    this.zoomEnabled              = true;
     this.zoom                     = 40;
-    this.zoomSpeed                = 0;
     this.zoomDampening            = .6;
     this.zoomCutoff               = .9;
 
@@ -157,34 +160,6 @@
 
     }
 
-    this.getDampening = function( frame ){
-
-      var frame = this.controller.frame();
-      
-      var dampening = this.rotationDampening;
-
-      if( frame.hands[0] ){
-        var hand = frame.hands[0];
-        
-        for( var i = 0; i < hand.fingers.length; i++ ){
-
-          var finger = hand.fingers[i];
-
-          if( finger.extended ){
-
-            // If any of our fingers are touching, slow it WAY down
-            if( finger.touchZone == 'touching' ) dampening = .1;
-        
-
-          }
-
-        }
-      }
-
-      return dampening;
-
-    }
-
     this.update = function(){
 
       // making sure our matrix transforms don't get overwritten
@@ -193,29 +168,33 @@
       var frame     = this.controller.frame();
 
       var torque    = this.getTorque(     frame );
-      var zoomForce = this.getZoomForce(  frame );
-      var dampening = this.getDampening(  frame );
       var dTime     = this.clock.getDelta();
       
-      this.zoomSpeed  += zoomForce * dTime;
-      this.zoom       += this.zoomSpeed;
-      this.zoomSpeed  *= this.zoomDampening;
+      if( this.zoomEnabled ){
 
-      // Maxes sure that we done go below or above the max zoom!
-      if( this.zoom > this.maxZoom ){
+        var zoomForce = this.getZoomForce(  frame );
+        
+        this.zoomSpeed  += zoomForce * dTime;
+        this.zoom       += this.zoomSpeed;
+        this.zoomSpeed  *= this.zoomDampening;
 
-        this.zoom       = this.maxZoom;
-        this.zoomSpeed  = 0;
+        // Maxes sure that we done go below or above the max zoom!
+        if( this.zoom > this.maxZoom ){
 
-      }else if( this.zoom < this.minZoom ){
+          this.zoom       = this.maxZoom;
+          this.zoomSpeed  = 0;
 
-        this.zoom       = this.minZoom;
-        this.zoomSpeed  = 0;
+        }else if( this.zoom < this.minZoom ){
+
+          this.zoom       = this.minZoom;
+          this.zoomSpeed  = 0;
+
+        }
 
       }
 
       this.angularVelocity.add( torque );
-      this.angularVelocity.multiplyScalar( dampening );
+      this.angularVelocity.multiplyScalar( this.rotationDampening );
            
       var angularDistance = this.angularVelocity.clone().multiplyScalar( dTime );
 
@@ -280,22 +259,16 @@
   // This function moves from a position from leap space, 
   // to a position in scene space, using the sceneSize
   // we defined in the global variables section
-  function leapToScene( position ){
+  this.leapToScene = function( position , clamp ){
 
-    var x = position[0] - frame.interactionBox.center[0];
-    var y = position[1] - frame.interactionBox.center[1];
-    var z = position[2] - frame.interactionBox.center[2];
-      
-    x /= frame.interactionBox.size[0];
-    y /= frame.interactionBox.size[1];
-    z /= frame.interactionBox.size[2];
+    var clamp = clamp || false;
+    var box = this.frame.interactionBox;
+    var nPos = box.normalizePoint( position , clamp );
+    
+    nPos[0] = (nPos[0]-.5) * this.size;
+    nPos[1] = (nPos[1]-.5) * this.size;
+    nPos[2] = (nPos[2]-.5) * this.size;
 
-    x *= sceneSize;
-    y *= sceneSize;
-    z *= sceneSize;
-
-    z -= sceneSize;
-
-    return new THREE.Vector3( x , y , z );
+    return new THREE.Vector3().fromArray( nPos );
 
   }

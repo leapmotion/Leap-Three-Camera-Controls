@@ -1,5 +1,6 @@
 /* 
  * Leap Eye Look Controls
+ * Author: @Nashira
  *
  * http://github.com/leapmotion/Leap-Three-Camera-Controls/    
  *    
