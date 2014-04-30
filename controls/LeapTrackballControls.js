@@ -52,6 +52,7 @@
     this.zoom                     = 40;
     this.zoomDampening            = .6;
     this.zoomCutoff               = .9;
+    this.zoomSpeedRatio           = 10;
 
     this.minZoom                  = 20;
     this.maxZoom                  = 80;
@@ -67,11 +68,10 @@
       
       if( frame.hands[0] ){
 
-        //console.log( this.angularVelocity );
         hand = frame.hands[0];
+        
         var hDirection  = new THREE.Vector3().fromArray( hand.direction );
         var hNormal     = new THREE.Vector3().fromArray( hand.palmNormal );
-       // hDirection.applyMatrix4( this.rotatingObject.matrix );
 
 
         for( var i = 0; i < hand.fingers.length; i++ ){
@@ -95,7 +95,10 @@
             var vMatch = Math.abs( tmp.normalize().dot( hNormal ) );
 
 
-            fVelocity.multiplyScalar( (this.rotationSpeed  / 100000) * fMatch * vMatch );
+            // Dividing this.rotationSpeed by large number just to
+            // keep parameters in a reasonable range
+            var rotationSpeed = this.rotationSpeed / 100000;
+            fVelocity.multiplyScalar( rotationSpeed * fMatch * vMatch );
 
             var torque = new THREE.Vector3().crossVectors( fVelocity , hDirection );
             torqueTotal.add( torque );
@@ -162,7 +165,9 @@
               var fVelocity = new THREE.Vector3().fromArray( fV );
           
               var dir = fVelocity.dot( new THREE.Vector3( 0 , 0 , 1 ) );
-              zoomForce -= dir / 100;
+
+              var zoomSpeedRatio = this.zoomSpeedRatio / 1000;
+              zoomForce -= dir* zoomSpeedRatio;
            
             }
 
@@ -244,12 +249,10 @@
       var pos = new THREE.Vector3( 0 , 0 , this.zoom );
       translationMatrix.setPosition( pos );
 
-      var rotatedMatrix = new THREE.Matrix4().multiplyMatrices( inverse , translationMatrix );
-      var position = new THREE.Vector3();
+      var rotatedMatrix = new THREE.Matrix4();
+      rotatedMatrix.multiplyMatrices( inverse , translationMatrix );
 
       this.object.matrix.copy( rotatedMatrix );
-
-
       this.object.matrixWorldNeedsUpdate = true;
 
 
@@ -272,8 +275,7 @@
 
 
   // This function moves from a position from leap space, 
-  // to a position in scene space, using the sceneSize
-  // we defined in the global variables section
+  // to a position in scene space 
   this.leapToScene = function( position , clamp ){
 
     var clamp = clamp || false;

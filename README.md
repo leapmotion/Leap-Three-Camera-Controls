@@ -466,6 +466,199 @@ Using the following parameters:
   - staticLength:   Tells us how far away camera comes to rest from target
 
 
+Trackball Controls
+-----
+
+Trackball Controls let you swipe the camera around a target, as if you
+were pushing a giant bowling ball around ( your hand is always behind the ball )
+Also , if you turn your hand straight up, and zoom is enabled, you will
+stop spinning and start zooming, based on moving your hand forward and backwards
+
+
+Pros:
+
+  - Supersmooth. 
+  - No Gimbal Lock!
+  - No use of Pinch! 
+
+Cons:
+
+  - Only moves around single point
+  - Controls take some getting used to for some people
+  - No clear up vector, which leads to possible deorientation
+
+Pairings:
+  
+  - 3D Modeling camera controls
+  - A quick addition to visual experiments
+
+
+Called using: 
+
+```
+<!-- Include Script -->
+<script src="path/to/controls/LeapTrackballControls.js"></script>
+
+// Inside Init Function
+var controls = THREE.LeapTrackballControls( camera , controller );
+
+controls.rotationSpeed            =   10;
+controls.rotationLowDampening     =  .98;
+controls.rotationHighDampening    =   .7;
+controls.zoom                     =   40;
+controls.zoomDampening            =   .6;
+controls.zoomSpeedRatio           =   10;
+controls.zoomCutoff               =   .9;
+controls.zoomEnabled              = true;
+controls.minZoom                  =   20;
+controls.maxZoom                  =   80;
+ 
+// Inside Animate Function
+controls.update();
+```
+
+Using the following parameters:
+
+  - rotationSpeed:          Tells us the speed of the rotation
+  - rotationLowDampening:   Tells us how quickly the rotation will slow down when in moving state
+  - rotationHighDampening:  Tells us how quickly the rotation will slow down when in stopping state
+  - zoomEnabled:            Tells us if zooming is enabled
+  - zoom:                   Tells us how close we are to the center
+  - zoomDampening:          Tells us how quickly the zoom will slow down
+  - zoomSpeedRatio:         Tells us how quickly the zoom moves compared to palm
+  - zoomCutoff:             Tells us how forward facing our palm needs to be to zoom
+  - minZoom:                Tells us the closest we can be
+  - maxZoom:                Tells us the farthest we can be
+  
+
+Pinch Rotate Controls
+-----
+
+Pinch Rotate Controls are nearly Identical to the Trackball controls, except that they use pinch in order to move the camera. As well, they have the ability to zoom in and out, by simply pinching and moving inwards or outwards. In order to define when this happens, it looks at the movement in Z vs the movement in X and Y, and compares the too to see if there is more movement in Z than XY or vis versa
+
+Pros:
+
+  - Supersmooth. 
+  - No Gimbal Lock!
+
+Cons:
+
+  - Only moves around single point
+  - Controls take some getting used to for some people
+  - No clear up vector, which leads to possible deorientation
+  - Uses Pinch :-( 
+
+Pairings:
+  
+  - 3D Modeling camera controls
+  - A quick addition to visual experiments
+
+
+Called using: 
+
+```
+<!-- Include Script -->
+<script src="path/to/controls/LeapTrackballControls.js"></script>
+
+// Inside Init Function
+var controls = THREE.LeapTrackballControls( camera , controller );
+
+controls.rotationSpeed            =   10;
+controls.rotationLowDampening     =  .98;
+controls.rotationHighDampening    =   .7;
+controls.zoom                     =   40;
+controls.zoomDampening            =   .6;
+controls.zoomSpeedRatio           =   10;
+controls.zoomCutoff               =   .9;
+controls.zoomEnabled              = true;
+controls.zoomVsRotate             =    1;
+controls.minZoom                  =   20;
+controls.maxZoom                  =   80;
+ 
+// Inside Animate Function
+controls.update();
+```
+
+Using the following parameters:
+
+  - rotationSpeed:          Tells us the speed of the rotation
+  - rotationLowDampening:   Tells us how quickly the rotation will slow down when in moving state
+  - rotationHighDampening:  Tells us how quickly the rotation will slow down when in stopping state
+  - zoomEnabled:            Tells us if zooming is enabled
+  - zoom:                   Tells us how close we are to the center
+  - zoomDampening:          Tells us how quickly the zoom will slow down
+  - zoomSpeedRatio:         Tells us how quickly the zoom moves compared to palm
+  - zoomCutoff:             Tells us how forward facing our palm needs to be to zoom
+  - zoomVsRotate:           Tells us how much more we need to be moving in Z than XY to start zooming, vs rotating
+  - minZoom:                Tells us the closest we can be
+  - maxZoom:                Tells us the farthest we can be
+
+
+
+Paddle Controls
+-----
+
+Pinch Rotate Controls are nearly Identical to the Trackball controls, except that they use pinch in order to move the camera. As well, they have the ability to zoom in and out, by simply pinching and moving inwards or outwards. In order to define when this happens, it looks at the movement in Z vs the movement in X and Y, and compares the too to see if there is more movement in Z than XY or vis versa
+
+Pros:
+
+  - Supersmooth. 
+  - No Gimbal Lock!
+
+Cons:
+
+  - Only moves around single point
+  - Controls take some getting used to for some people
+  - No clear up vector, which leads to possible deorientation
+  - Uses Pinch :-( 
+
+Pairings:
+  
+  - 3D Modeling camera controls
+  - A quick addition to visual experiments
+
+
+Called using: 
+
+```
+<!-- Include Script -->
+<script src="path/to/controls/LeapTrackballControls.js"></script>
+
+// Inside Init Function
+var controls = THREE.LeapTrackballControls( camera , controller );
+
+controls.rotationSpeed            =   10;
+controls.rotationLowDampening     =  .98;
+controls.rotationHighDampening    =   .7;
+controls.zoom                     =   40;
+controls.zoomDampening            =   .6;
+controls.zoomSpeedRatio           =   10;
+controls.zoomCutoff               =   .9;
+controls.zoomEnabled              = true;
+controls.zoomVsRotate             =    1;
+controls.minZoom                  =   20;
+controls.maxZoom                  =   80;
+ 
+// Inside Animate Function
+controls.update();
+```
+
+Using the following parameters:
+
+  - rotationSpeed:          Tells us the speed of the rotation
+  - rotationLowDampening:   Tells us how quickly the rotation will slow down when in moving state
+  - rotationHighDampening:  Tells us how quickly the rotation will slow down when in stopping state
+  - zoomEnabled:            Tells us if zooming is enabled
+  - zoom:                   Tells us how close we are to the center
+  - zoomDampening:          Tells us how quickly the zoom will slow down
+  - zoomSpeedRatio:         Tells us how quickly the zoom moves compared to palm
+  - zoomCutoff:             Tells us how forward facing our palm needs to be to zoom
+  - zoomVsRotate:           Tells us how much more we need to be moving in Z than XY to start zooming, vs rotating
+  - minZoom:                Tells us the closest we can be
+  - maxZoom:                Tells us the farthest we can be
+
+
+
 Two Hand Controls
 -----
 
@@ -517,74 +710,6 @@ controls.update();
 
 TODO: Description of Parameters
 
-
-Trackball Controls
------
-
-Trackball Controls let you swipe the camera around a target, as if you
-were pushing a giant bowling ball around ( your hand is always behind the ball )
-Also , if you turn your hand straight up, and zoom is enabled, you will
-stop spinning and start zooming, based on moving your hand forward and backwards
-
-
-Pros:
-
-  - Supersmooth. 
-  - No Gimbal Lock!
-  - No use of Pinch! 
-
-Cons:
-
-  - Only moves around single point
-  - Controls take some getting used to for some people
-  - No clear up vector, which leads to possible deorientation
-
-Pairings:
-  
-  - 3D Modeling camera controls
-  - A quick addition to visual experiments
-
-
-Called using: 
-
-```
-<!-- Include Script -->
-<script src="path/to/controls/LeapTrackballControls.js"></script>
-
-// Inside Init Function
-var controls = THREE.LeapTrackballControls( camera , controller );
-
-controls.rotationSpeed            = 10;
-controls.rotationDampening        = .98;
-controls.zoom                     = 40;
-controls.zoomDampening            = .6;
-controls.zoomCutoff               = .9;
-
-controls.minZoom                  = 20;
-controls.maxZoom                  = 80;
-
-// Inside Animate Function
-controls.update();
-```
-
-Using the following parameters:
-
-  - rotationSpeed:      Tells us the speed of the rotation
-  - rotationDampening:  Tells us how quickly the rotation will slow down
-  - zoomEnabled:        Tells us if zooming is enabled
-  - zoom:               Tells us how close we are to the center
-  - zoomDampening:      Tells us how quickly the zoom will slow down
-  - zoomCutoff:         Tells us how forward facing our palm needs to be to zoom
-  - minZoom:            Tells us the closest we can be
-  - maxZoom:            Tells us the farthest we can be
-  
-
-Pinch Rotate Controls
------
-
-
-Paddle Controls
------
 
 
 First Person Controls
