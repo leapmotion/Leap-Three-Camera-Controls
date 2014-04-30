@@ -160,10 +160,10 @@ Full Code Example
 
     <div id="container"></div>
 
-    <script src="../lib/leap.min.js"></script>
-    <script src="../lib/three.js"></script>
+    <script src="https://js.leapmotion.com/leap-0.6.0-beta2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r66/three.min.js"></script>
 
-    <script src="../controls/LeapSpringControls.js"></script>
+    <script src="https://js.leapmotion.com/threejs/LeapSpringControls-0.1.0.js"></script>
     
     <script>
 
@@ -272,7 +272,7 @@ Called using:
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapPointerControls.js"></script>
+<script src="path/to/controls/LeapPointerControls-0.1.0.js"></script>
 
 // Inside Init Function
 var controls = THREE.LeapPointerControls( camera , controller );
@@ -338,7 +338,7 @@ Called using:
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapEyeLookControls.js"></script>
+<script src="path/to/controls/LeapEyeLookControls-0.1.0.js"></script>
 
 // Inside Init Function
 var controls = THREE.LeapEyeLookControls( camera , controller , scene );
@@ -426,7 +426,7 @@ Called using:
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapEyeLookControls.js"></script>
+<script src="path/to/controls/LeapEyeLookControls-0.1.0.js"></script>
 
 // Inside Init Function
 controls = new THREE.LeapSpringControls( camera , controller , scene );
@@ -498,7 +498,7 @@ Called using:
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapTrackballControls.js"></script>
+<script src="path/to/controls/LeapTrackballControls-0.1.0.js"></script>
 
 // Inside Init Function
 var controls = THREE.LeapTrackballControls( camera , controller );
@@ -559,7 +559,7 @@ Called using:
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapPinchRotateControls.js"></script>
+<script src="path/to/controls/LeapPinchRotateControls-0.1.0.js"></script>
 
 // Inside Init Function
 var controls = THREE.LeapPinchRotateControls( camera , controller );
@@ -625,7 +625,7 @@ Called using:
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapPaddleControls.js"></script>
+<script src="path/to/controls/LeapPaddleControls-0.1.0.js"></script>
 
 // Inside Init Function
 var controls = THREE.LeapPaddleControls( camera , controller );
@@ -687,7 +687,7 @@ Called using:
 
 ```
 <!-- Include Script -->
-<script src="path/to/controls/LeapEyeLookControls.js"></script>
+<script src="path/to/controls/LeapEyeLookControls-0.1.0.js"></script>
 
 // Inside Init Function
 controls = new THREE.LeapTwoHandControls( camera , controller , scene );
