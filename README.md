@@ -3,14 +3,36 @@ Three.js Camera Controls using Leap Motion
 
 Hey Friends!
 
-I hope you are here to use the Leap.js / Three.js Camera controls. If you aren't, the following might be pretty boring, but since you are here, you should try using them anyway.
+I hope you are here to use the Leap.js / Three.js Camera controls. 
+If you aren't, the following might not make since, but since you are here,
+you should try using them anyway!
 
-In this readme, you will find 3 sections
+This Repo is most definitly still a work in progress, so if you see any 
+errors, have any questions, think all the controls are horrendous, think the
+code is ugly, have your own controls that are way better than all of these,
+PLEASE, PLEASE, PLEASE let me know at icohen@leapmotion.com || @cabbibo .
 
-- Basic Implementation
-- A full example 
-- Further explanations of each individual camera control
+The Realm we have entered with gesture controlled devices is a wild frontier,
+an unexplored landscape. We will make mistakes, and the more we know about these 
+mistakes, the better we can survive in this new magical space. So let me know 
+your opinions, my fellow Motion Pioneers!
 
+Whats in this Readme?
+-----
+
+  - Links to Useful Resources
+  - Basic Implementation
+  - A full example from start to finish!
+  - Further explanations of each individual camera controls
+
+Useful Resources
+=====
+
+
+- [ The github page for this repo ]( http://leapmotion.github.io/Leap-Three-Camera-Controls/ )
+- [ three.js library ]( http://threejs.org/ );
+- [ Example of three.js Camera Control ]( http://threejs.org/examples/#misc_controls_trackball )
+- [ TODO: Really Pretty Tech Demo of Nvidias Open Source Driver Call Graph ]()
 
 
 Basic Implementation
