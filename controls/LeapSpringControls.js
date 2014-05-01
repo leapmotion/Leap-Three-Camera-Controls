@@ -1,13 +1,24 @@
-/**
- * @author cabbibo / http://cabbibo.com
+/* 
+ * Leap Spring Controls
+ * Author: @Cabbibo
  *
- * Circle to create a new anchor! 
- * Will need to pass in a Scene, as well as a leap controller
- * In order to create the camera, so that you can place the 
- * UI elements
- *
- *
- */
+ * http://github.com/leapmotion/Leap-Three-Camera-Controls/    
+ *    
+ * Copyright 2014 LeapMotion, Inc    
+ *    
+ * Licensed under the Apache License, Version 2.0 (the "License");    
+ * you may not use this file except in compliance with the License.    
+ * You may obtain a copy of the License at    
+ *    
+ *     http://www.apache.org/licenses/LICENSE-2.0    
+ *    
+ * Unless required by applicable law or agreed to in writing, software    
+ * distributed under the License is distributed on an "AS IS" BASIS,    
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
+ * See the License for the specific language governing permissions and    
+ * limitations under the License.    
+ *    
+ */    
 
 THREE.LeapSpringControls = function ( object , controller , scene , domElement ) {
 
@@ -16,65 +27,71 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
   this.scene      = scene;
   this.domElement = ( domElement !== undefined ) ? domElement : document;
 
+  this.velocity = new THREE.Vector3();
+  this.acceleration = new THREE.Vector3();
+  
   // API
   
   this.enable = true;
 
-  this.velocity = new THREE.Vector3();
-  this.acceleration = new THREE.Vector3();
-
-  this.dampening = ( object.dampening !== undefined ) ? object.dampening : .95;
-
-  this.weakDampening    = .99;
-  this.strongDampening  = .8;
-
-  this.dampening        = this.strongDampening;
-
+  this.dampening        = .9;
   this.size             = 120;
   this.springConstant   = 7;
-  this.staticLength     = this.size ;
-  this.mass             = 1000;
+  this.staticLength     = this.size;
+  this.mass             = 100;
 
-  this.anchorToTarget   = 24;
+  this.anchorSpeed      = .1;
 
+  this.handBasis        = new THREE.Matrix4();
 
   this.interactionBox   = {
     center: [ 0 , 0 , 0 ],
     size:   [ 0 , 0 , 0 ]
   }
 
-  this.placesTraveled   = [];
-  
-  //this.lDivisionFactor     = 50;
-
-
-  // Creates the Target Object ( object that will tween to anchor
+  // Creates the Target Object ( object that will tween to anchor )
   this.target = new THREE.Object3D();
-  this.targetIndicator = new THREE.Mesh( 
-    new THREE.IcosahedronGeometry( this.size / 250 , 1 ), 
-    new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: .5 , transparent:true }) 
-  );
-  this.target.add( this.targetIndicator );
   this.scene.add( this.target );
 
 
-  // Creates the Anchor Object ( object hat will switch instantly )
+  // Creates the Anchor Object ( object that will switch instantly )
   this.anchor = new THREE.Object3D();
-  this.anchorIndicator = new THREE.Mesh( 
-    new THREE.IcosahedronGeometry( this.size/200 , 1 ),
-    new THREE.MeshBasicMaterial({ color:0x00ff00  }) 
-  );
-  //this.anchor.add( this.anchorIndicator ); // Uncomment , so show where target is tweening
   this.scene.add( this.anchor );
 
+  // Creates the Hand Object ( Object that defines the Anchor placement )
+  this.hand = new THREE.Object3D();
+  this.scene.add( this.hand );
 
-  // Lets us know where our finger is
-  this.fingerIndicator = new THREE.Mesh(
-    new THREE.IcosahedronGeometry( this.size/200 , 1 ),
-    new THREE.MeshBasicMaterial({ color:0xffffff , opacity: .5 , transparent:true }) 
-  );
-  scene.add( this.fingerIndicator );
 
+  /*
+  
+     Functions for adding and removing markers
+
+  */
+  this.addTargetMarker = function( mesh ){
+    this.target.add( mesh );
+  }
+  
+  this.removeTargetMarker = function( mesh ){
+    this.target.remove( mesh );
+  }
+
+  this.addAnchorMarker = function( mesh ){
+    this.anchor.add( mesh );
+  }
+  
+  this.removeAnchorMarker = function( mesh ){
+    this.anchor.remove( mesh );
+  }
+  
+  this.addHandMarker = function( mesh ){
+    this.hand.add( mesh );
+  }
+  
+  this.removeHandMarker = function( mesh ){
+    this.hand.remove( mesh );
+  }
+  
   this.getForce = function(){
 
     var difference = new THREE.Vector3();
@@ -83,14 +100,8 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
     var l = difference.length();
     var x = l - this.staticLength;
 
-
     // Hooke's Law
     var f = difference.normalize().multiplyScalar(x).multiplyScalar( this.springConstant );
-
-    /*if( x < 0 ){
-      var addForce = difference.normalize().multiplyScalar( - x / l );
-      f.add( addForce );
-    }*/
 
     return f;
 
@@ -108,21 +119,17 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
 
   }
 
-  this.leapToScene = function( position  ){
+  this.leapToScene = function( position , clamp ){
 
-    var x = position[0] - this.interactionBox.center[0];
-    var y = position[1] - this.interactionBox.center[1];
-    var z = position[2] - this.interactionBox.center[2];
-      
-    x /= this.interactionBox.size[0];
-    y /= this.interactionBox.size[1];
-    z /= this.interactionBox.size[2];
+    var clamp = clamp || false;
+    var box = this.frame.interactionBox;
+    var nPos = box.normalizePoint( position , clamp );
+    
+    nPos[0] = (nPos[0]-.5) * this.size;
+    nPos[1] = (nPos[1]-.5) * this.size;
+    nPos[2] = (nPos[2]-.5) * this.size;
 
-    x *= this.size;
-    y *= this.size;
-    z *= this.size;
-
-    return new THREE.Vector3( x , y , z );
+    return new THREE.Vector3().fromArray( nPos );
 
   }
 
@@ -136,9 +143,12 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
     // and also the interaction box
     if( !this.oFrame ){
       this.oFrame = this.frame;
+    }
+
+    if( this.frame.valid ){
       this.interactionBox = this.frame.data.interactionBox;
     }
-  
+
     if( this.frame ){
 
       if( this.frame.hands[0] && this.frame.pointables.length ){
@@ -152,22 +162,15 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
         position.z     -= this.size;
         position.applyMatrix4( this.object.matrix ); 
 
-        this.fingerIndicator.position = position;
+        this.hand.position = position;
 
         var pinchStrength = this.frame.hands[0].pinchStrength;
+        
         if( pinchStrength > .5 ){
     
-              this.target.position = position;
+          this.target.position = position;
 
-              this.placesTraveled.push( position );
-
-              // Uses the gesture radius to define the size of attraction
-              this.staticLength = /*( 1-pinchStrength ) */ this.size;
         }
-
-      }else{
-
-        this.fingerIndicator.position.x = this.size * 10000;
 
       }
 
@@ -176,14 +179,16 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
     this.oFrame = this.frame;
 
   }
-
-  // Non - rigid, don't update if past x = 0 , only look at if x > 0
+  
   this.update = function(){
 
     // Just incase this is overwritten somewhere else in the code
     this.object.matrixAutoUpdate = true;
 
-
+    var f = this.controller.frame();
+          
+    this.target.rotation.setFromRotationMatrix(camera.matrix);
+    
     /*
      
        Since we always want to look at the anchor,
@@ -198,10 +203,9 @@ THREE.LeapSpringControls = function ( object , controller , scene , domElement )
     var t = this.target.position;
    
     // Moves the anchor towards the target
-    a.x   = a.x - ( a.x - t.x ) / this.anchorToTarget;
-    a.y   = a.y - ( a.y - t.y ) / this.anchorToTarget;
-    a.z   = a.z - ( a.z - t.z ) / this.anchorToTarget;
-   
+    var dif = a.clone().sub( t );
+
+    a = a.sub( dif.multiplyScalar( this.anchorSpeed ) );
 
     // Get and apply the spring photos
     f = this.getForce();

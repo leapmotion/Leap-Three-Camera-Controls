@@ -1,13 +1,28 @@
-/**
-*
-*  Grab space with your hands
-*
-*/
+/* 
+ * Leap Eye Look Controls
+ * Author: @Nashira
+ *
+ * http://github.com/leapmotion/Leap-Three-Camera-Controls/    
+ *    
+ * Copyright 2014 LeapMotion, Inc    
+ *    
+ * Licensed under the Apache License, Version 2.0 (the "License");    
+ * you may not use this file except in compliance with the License.    
+ * You may obtain a copy of the License at    
+ *    
+ *     http://www.apache.org/licenses/LICENSE-2.0    
+ *    
+ * Unless required by applicable law or agreed to in writing, software    
+ * distributed under the License is distributed on an "AS IS" BASIS,    
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    
+ * See the License for the specific language governing permissions and    
+ * limitations under the License.    
+ *    
+ */    
 
 THREE.LeapTwoHandControls = (function () {
   
   var PI_2 = Math.PI * 2;
-  var MIN_ROT_MAG_SQ = 0.33;
   var X_AXIS = new THREE.Vector3(1, 0, 0);
   var Y_AXIS = new THREE.Vector3(0, 1, 0);
   var Z_AXIS = new THREE.Vector3(0, 0, 1);
@@ -21,10 +36,11 @@ THREE.LeapTwoHandControls = (function () {
     this.translationSpeed = 20;
     this.translationDecay = 0.3;
     this.scaleDecay = 0.5;
-    this.rotationSlerp = 0.7;
+    this.rotationSlerp = 0.8;
     this.rotationSpeed = 4;
     this.pinchThreshold = 0.5;
-    this.smoothingValue = 0.2;
+    this.transSmoothing = 0.5;
+    this.rotationSmoothing = 0.2;
     
     this.vector = new THREE.Vector3();
     this.vector2 = new THREE.Vector3();
@@ -34,8 +50,16 @@ THREE.LeapTwoHandControls = (function () {
     this.translationMomentum = new THREE.Vector3();
     this.scaleMomentum = new THREE.Vector3(1, 1, 1);
     this.rotationMomentum = this.object.quaternion.clone();
-    this.transLP = [new Smoother(this.smoothingValue), new Smoother(this.smoothingValue), new Smoother(this.smoothingValue)];
-    this.rotLP = [new Smoother(this.smoothingValue), new Smoother(this.smoothingValue), new Smoother(this.smoothingValue)];
+
+    this.transLP = [
+        new LowPassFilter(this.transSmoothing),
+        new LowPassFilter(this.transSmoothing),
+        new LowPassFilter(this.transSmoothing)];
+
+    this.rotLP = [
+        new LowPassFilter(this.rotationSmoothing),
+        new LowPassFilter(this.rotationSmoothing),
+        new LowPassFilter(this.rotationSmoothing)];
   }
   
   LeapTwoHandControls.prototype.update = function() {
@@ -107,7 +131,10 @@ THREE.LeapTwoHandControls = (function () {
   
   LeapTwoHandControls.prototype.shouldRotate = function (anchorHands, hands) {
     var isEngaged = this.isEngaged.bind(this);
-    return anchorHands.every(isEngaged) && hands.every(isEngaged);
+    return anchorHands.length > 1
+        && hands.length > 1
+        && anchorHands.every(isEngaged)
+        && hands.every(isEngaged);
   }
   
   LeapTwoHandControls.prototype.applyTranslation = function (anchorHands, hands) {
@@ -116,9 +143,9 @@ THREE.LeapTwoHandControls = (function () {
                                 anchorHands.filter(isEngaged),
                                 hands.filter(isEngaged));
     
-    translation[0] = this.transLP[0].smoothedValue(translation[0]);
-    translation[1] = this.transLP[1].smoothedValue(translation[1]);
-    translation[2] = this.transLP[2].smoothedValue(translation[2]);
+    translation[0] = this.transLP[0].sample(translation[0]);
+    translation[1] = this.transLP[1].sample(translation[1]);
+    translation[2] = this.transLP[2].sample(translation[2]);
     
     this.vector.fromArray(translation);
     if (this.invert) {
@@ -131,9 +158,9 @@ THREE.LeapTwoHandControls = (function () {
   
   LeapTwoHandControls.prototype.applyRotation = function (anchorHands, hands) {
     var rotation = this.getRotation(anchorHands, hands);
-    rotation[0] = this.rotLP[0].smoothedValue(rotation[0]);
-    rotation[1] = this.rotLP[1].smoothedValue(rotation[1]);
-    rotation[2] = this.rotLP[2].smoothedValue(rotation[2]);
+    rotation[0] = this.rotLP[0].sample(rotation[0]);
+    rotation[1] = this.rotLP[1].sample(rotation[1]);
+    rotation[2] = this.rotLP[2].sample(rotation[2]);
     this.vector.fromArray(rotation);
     this.vector.multiplyScalar(this.rotationSpeed);
     if (this.invert) {
@@ -188,9 +215,19 @@ THREE.LeapTwoHandControls = (function () {
   }
   
   LeapTwoHandControls.prototype.getRotation = function(anchorHands, hands) {
-    if (hands.length < 2 || anchorHands.length < 2) {
+    if (hands.length < 1 || anchorHands.length < 1
+        || hands.length != anchorHands.length) {
       return [0, 0, 0];
     }
+
+    var am = getAxisMag(hands);
+    if (am[3] < 6000) {
+      return [0, 0, 0];
+    }
+    var mi = 1 / am[3];
+    am[0]*=mi;
+    am[1]*=mi;
+    am[2]*=mi;
   
     var anchorAngles = getAngles(anchorHands);
     var angles = getAngles(hands);
@@ -205,8 +242,8 @@ THREE.LeapTwoHandControls = (function () {
     else if (dy < -Math.PI) dy = dy + PI_2;
     if (dz > Math.PI) dz = dz - PI_2;
     else if (dz < -Math.PI) dz = dz + PI_2;
-  
-    return [dx, dy, dz];
+
+    return [dx * am[0], dy * am[1], dz * am[2]];
   }
   
 
@@ -249,13 +286,38 @@ THREE.LeapTwoHandControls = (function () {
     var dx = pos2[0] - pos1[0];
     var dy = pos2[1] - pos1[1];
     var dz = pos2[2] - pos1[2];
-    var mag = 1 / (dx * dx + dy * dy + dz * dz);
-  
-    var ax = (dy * dy + dz * dz) * mag > MIN_ROT_MAG_SQ ? Math.atan2(dy, dz) : 0;
-    var ay = (dx * dx + dz * dz) * mag > MIN_ROT_MAG_SQ ? Math.atan2(dx, dz) : 0;
-    var az = (dy * dy + dx * dx) * mag > MIN_ROT_MAG_SQ ? Math.atan2(dy, dx) : 0;
-  
+
+    var ax = Math.atan2(dy, dz);
+    var ay = Math.atan2(dx, dz);
+    var az = Math.atan2(dy, dx);
     return [ax, ay, az];
+  }
+
+  function getAxisMag(hands) {
+    if (hands.length == 0) {
+      return [0, 0, 0, 0];
+    }
+  
+    var pos1;
+    var hand = hands[0];
+    if (hands.length > 1) {
+      pos1 = hands[1].palmPosition;
+    } else {
+      pos1 = hand.frame.interactionBox.center;
+    }
+  
+    var pos2 = hand.palmPosition;
+  
+    var dx = pos2[0] - pos1[0];
+    var dy = pos2[1] - pos1[1];
+    var dz = pos2[2] - pos1[2];
+    var mag = dx * dx + dy * dy + dz * dz;
+  
+    var ax = dy * dy + dz * dz;
+    var ay = dx * dx + dz * dz;
+    var az = dy * dy + dx * dx;
+  
+    return [ax, ay, az, mag];
   }
   
   function aveDistance(center, hands) {
@@ -290,18 +352,17 @@ THREE.LeapTwoHandControls = (function () {
   }
 
 
-  function Smoother(smoothing) {
-    var smoothed = 0;
+  function LowPassFilter(cutoff) {
+    var accumulator = 0;
   
-    this.setSmoothing = function (value) {
-      smoothing = value;
+    this.setCutoff = function (value) {
+      cutoff = value;
     };
   
-    this.smoothedValue = function(newValue) {
-      smoothed += (newValue - smoothed) * smoothing;
-      return smoothed;
+    this.sample = function(sample) {
+      accumulator += (sample - accumulator) * cutoff;
+      return accumulator;
     }
-
   }
   
   return LeapTwoHandControls;
