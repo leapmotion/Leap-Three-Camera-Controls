@@ -18,7 +18,7 @@
     <div id="container"></div>
 
     <script src="../lib/leap.min.js"></script>
-    <script src="../lib/three.js"></script>
+    <script src="../lib/three.min.js"></script>
 
     <script src="../lib/OBJLoader.js"></script>
 
@@ -54,7 +54,7 @@
         controls = new THREE.LeapPointerControls( camera , controller );
 
         var material = new THREE.MeshNormalMaterial();
-        var geometry = new THREE.CubeGeometry( 10 , 10 , 10 );
+        var geometry = new THREE.BoxGeometry( 10 , 10 , 10 );
         var mesh = new THREE.Mesh( geometry , material );
         scene.add( mesh );
 
