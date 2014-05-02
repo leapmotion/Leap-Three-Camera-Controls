@@ -1053,6 +1053,7 @@ controls.update();
 
         if( i != slideNum ){
           slides[i].classList.add( 'inactiveSlide' );
+          slides[i].classList.remove( 'activeSlide' );
         }else{
           slides[i].classList.add( 'activeSlide' );
           slides[i].classList.remove( 'inactiveSlide' );
@@ -1074,6 +1075,15 @@ controls.update();
         activeControl = undefined;
       }
 
+      
+      console.log( activeControl );
+      if( activeControl ){
+        console.log( activeControl );
+        if( activeControl.gui ){
+          console.log( activeControl );
+          activeControl.gui.open();
+        }
+      }
     }
 
     function activateGUI( slideNum ){
@@ -1085,6 +1095,7 @@ controls.update();
 
           if( i != id ){
             guidat[i].classList.add( 'inactiveGui' );
+            guidat[i].classList.remove( 'activeGui' );
           }else{
             guidat[i].classList.add( 'activeGui' );
             guidat[i].classList.remove( 'inactiveGui' );
@@ -1204,6 +1215,7 @@ controls.update();
         control.gui.domElement.class = 'cameraControlGUI';
         control.gui.domElement.id    = 'springControls';
 
+        control.gui.close();
         control.params = {
           dampening      : .75,
           size           : 120,
@@ -1246,6 +1258,8 @@ controls.update();
 
         control.gui.domElement.class = 'cameraControlGUI';
         control.gui.domElement.id    = 'pointerControls';
+        control.gui.close();
+
 
         controls.size       = 100;
         control.params = {
@@ -1278,6 +1292,8 @@ controls.update();
 
         control.gui.domElement.class = 'cameraControlGUI';
         control.gui.domElement.id    = 'eyeLookControls';
+        control.gui.close();
+
 
         control.params = {
           lookSize       : 10,
@@ -1331,6 +1347,7 @@ controls.update();
 
         control.gui.domElement.class = 'cameraControlGUI';
         control.gui.domElement.id    = 'twoHandControls';
+        control.gui.close();
 
         control.params = {
           translationSpeed   : 20,
@@ -1372,6 +1389,8 @@ controls.update();
 
         control.gui.domElement.class = 'cameraControlGUI';
         control.gui.domElement.id    = 'pinchRotateControls';
+        control.gui.close();
+
 
         control.params = {
           rotationSpeed            :   10,
@@ -1420,6 +1439,8 @@ controls.update();
 
         control.gui.domElement.class = 'cameraControlGUI';
         control.gui.domElement.id    = 'trackballControls';
+        control.gui.close();
+
 
 
         control.params = {
@@ -1463,6 +1484,8 @@ controls.update();
 
         control.gui.domElement.class = 'cameraControlGUI';
         control.gui.domElement.id    = 'paddleControls';
+        control.gui.close();
+
 
         control.params = {
           weakDampening        : .99,
