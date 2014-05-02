@@ -283,7 +283,7 @@ function init(){
   document.body.appendChild( renderer.domElement );
 
   // Adding something to the scene just so we can see if it works
-  var geometry  = new THREE.IcosahedronGeometry( 50 , 2 );
+  var geometry  = new THREE.IcosahedronGeometry( 5 , 2 );
   var material  = new THREE.MeshNormalMaterial();
   var mesh      = new THREE.Mesh( geometry , material );
   
@@ -397,7 +397,7 @@ function animate(){
         renderer.setSize( w , h );
         document.body.appendChild( renderer.domElement );
 
-        var geometry  = new THREE.IcosahedronGeometry( 50 , 2 );
+        var geometry  = new THREE.IcosahedronGeometry( 5 , 2 );
         var material  = new THREE.MeshNormalMaterial();
         var mesh      = new THREE.Mesh( geometry , material );
         
