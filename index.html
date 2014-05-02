@@ -1,19 +1,124 @@
+<!--
+
+  ORDER GOES:
+
+    Spring
+    Pointer
+    EyeLook
+    TwoHand
+    PinchRotate
+    Trackball
+    Paddle
+-->
 
 <html>
   <head>
     <style>
 
+      
       body {
-
+        margin:0px;
         font-family:"GeoSans";
+        background:#000;
+        font-size:20px;
         overflow:hidden;
 
       }
 
-      a{
+      code{
+
+        background-color: rgba(255,255,255,.2);
+        display: inline-block;
+        padding:0px 20px;
+        width:90%;
+        overflow:auto;
+        font-size:14px;
+
+      }
+
+      code.inline{
+        width:auto;
+        padding:0px 0px;
+        display:inline;
+      }
+
+      #header{
+        width:100%;
+        background:#000;
+        padding:10px;
+        border-bottom:1px solid white;
+      }
+
+      #header > div, #header > div > a{
         font-size:25px;
+        color:#fff;
+        display:inline;
+        padding:10px;
+      }
+
+      #slideControls{
+        position:absolute;
+        left: 420px;
+        top:0px;
+      }
+
+      #socialLinks > a{
+        display:inline-block;
+        width: 25px;
+        height: 25px;
+        margin: 5px;
+        margin-top:-7px;
+        float:right;
+
+      }
+      
+      #header > div > a{
+        background:#333;
+      }
+
+
+      .inactiveSlide{
+
+        display:none;
+      }
+
+      .activeSlide{
+      
+        padding:50px;
+        width:40%;
+        top: 10%;
+        height:80%;
+        overflow:auto;
+        color:#fff;
+        background-color: rgba(0 , 0 , 0 ,.8);
+        
+
+      }
+
+      #scene{
+
+        position:absolute;
+        top:0px;
+        left:0px;
+        z-index:-99;
+      }
+
+      #GUI{
+
+        position:absolute;
+        right:0px;
+        width:500px;
+        height:500px;
         display:block;
-        color:#000;
+        background:#111;
+
+      }
+
+      .cameraControlGUI{
+
+      }
+      a{
+        color:#fff;
         text-decoration:none;
       }
 
@@ -21,9 +126,27 @@
         text-decoration:underline;
       }
 
+      ::-webkit-scrollbar {
+          width: 12px;
+      }
+       
+      ::-webkit-scrollbar-track {
+          -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+          border-radius: 10px;
+      }
+       
+      ::-webkit-scrollbar-thumb {
+          border-radius: 10px;
+          -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+      }
+
       @font-face {
         font-family: "GeoSans";
         src: url("examples/lib/GeosansLight.ttf");
+      }
+
+      .inactiveGui{
+        display:none;
       }
 
     </style>
@@ -31,14 +154,1112 @@
   </head>
 
   <body>
-    <h1><a href="TOGITHUB"> Leap.js / Three.js Camera Controls </a></h1>
-    <a href="examples/PaddleControls.html"> Paddle Controls </a>
-    <a href="examples/TrackballControls.html"> Trackball Controls </a>
-    <a href="examples/TwoHandControls.html"> Two Hand Controls </a>
-    <a href="examples/SpringControls.html"> Spring Controls </a>
-    <a href="examples/PointerControls.html"> Pointer Controls </a>
-    <a href="examples/PinchRotateControls.html"> Pinch Rotate Controls </a>
-    <a href="examples/EyeLookControls.html"> Eye Look Controls </a>
-    <a href="examples/OBJViewer.html"> OBJ Viewer</a>
+  <div id="header">
+    <div id="title"> Leap Three Camera Controls </div>
+    <div id="slideCounter"> 0 / 12 </div>
+    <div id="slideControls">
+      <a onClick="previousSlide()">&lt;</a>
+      <a onClick="nextSlide()">&gt;</a>
+    </div>
+
+    <div id="socialLinks">
+      <a href="TWITTERLINK"></a>
+      <a href="FACEBOOKLINK"></a>
+      <a href="GITHUBLINK"></a>
+      <a href="LEAPDEVLINK"></a>
+    </div>
+  </div>
+  <div id="slides">
+  
+    <div class="slide" id="intro">
+      <h1> Getting Started </h1>
+      <p> 
+        Have you ever used Three.js? Have you ever wanted to see your work in 3D? 
+        Have you wondered how we got here, what the meaning of life is?
+      </p>
+      <p>
+        If your answer was yes to any of these questions, than you are in the right place!
+        Here we are going to learn how to not only see things in 3D, but also make than move
+        with just the flick of our wrist, the wave of our hands.
+      </p>
+      <p>
+        If you have never touched three.js before, your best bet is to check out one of the 
+        tutorials from someone who knows what they are doing ( which is most definitely not me ).
+        Below are some good starting resources:
+        <ul>
+          <li><a href="https://github.com/mrdoob/three.js/">Three.js Github Repo</a></li>
+          <li><a href="http://aerotwist.com/tutorials/getting-started-with-three-js/"> 
+            AeroTwist Three.js Tutorial</a></li>
+        </ul>
+      </p>
+      <p>
+        Once you have an understanding of what exactly three.js is, Head onto the next slide, 
+        where we will learn how to start making 3D Leapable!
+      </p>
+      <p> 
+        Keep in mind that at any point during this process, you can 
+        <a href="LINKTOSOURCE"> DOWNLOAD THE EXAMPLE SOURCE </a>
+        to start playing right away!
+      </p>
+    </div>
+
+    <div class="slide" id="includingScripts">
+      <h1> Including Scripts </h1>
+      
+      <p> Still with us? Good, than lets dive into some code right away!</p>
+      <p> 
+        The point of these Leap-Three-Camera-Controls is to make it as easy as possible to get 
+        something you've made to the point where it is using the Leap Motion Controller to make 
+        more magic. But before magic comes CODE! 
+      </p>
+      <p> 
+        The first thing we will do is to include all the files we need. For the purpose of this
+        walkthrough, we will be defining the paths as we would in our examples, but keep in mind
+        you will be having to define your own paths:
+      </p>
+      <pre><code>
+&lt;script src = &quot;lib/three.min.js&quot;                   &gt;&lt;/script&gt;
+&lt;script src = &quot;lib/leap.js&quot;                        &gt;&lt;/script&gt;
+&lt;script src = &quot;controls/LeapTrackballControls.js&quot;  &gt;&lt;/script&gt;
+      </code></pre>
+
+      <p>
+        Next Slide we'll get the Camera set up, and initialize our controller!
+      </p>
+    </div>
+
+    <div class="slide" id="globalVariables">
+      <h1> Global Variables </h1>
+
+      <p>
+        We will split the majority of our program into two parts: Initialization, and Animation.
+        The Animation will take care of updating and rendering things, and will be called every frame.
+        The initialization will set up everything we need to use in the animation step, however, the
+        first thing that we need to do is create things that we will share between the two steps:
+        <br/><br/>
+        Global Variables!
+      </p>
+
+      <pre><code>
+// our leap controller
+var controller;
+
+// our leap camera controls
+var controls;
+
+// our three.js variables
+var scene , camera , renderer;
+      </code></pre>
+
+    </div>
+
+    <div class="slide" id="initialization">
+      <h1> Initialization </h1>
+
+      <p>
+        Now that we've got the global variables defined, we can initialize them. We will be going over
+        the THREE.JS initialization pretty quickly, so if it doesn't make sense to you, make sure you
+        check out <a href="http://aerotwist.com/tutorials/getting-started-with-three-js/"> 
+        A TUTORIAL </a>. 
+      </p>
+      <p>
+        All of our code will be inside an <code class="inline">init</code> function, where this function can be called 
+        wherever you want, but for this slide we are more concerned about whats INSIDE the function call
+      </p>
+
+      <pre><code>
+function init(){
+
+  // Setting up THREE.JS Scene / Camera / Renderer
+
+  var w     = window.innerWidth;
+  var h     = window.innerHeight;
+
+  scene     = new THREE.Scene();
+  camera    = new THREE.PerspectiveCamera( 50 , w / h , 1 , 1000 ); 
+  renderer  = new THREE.WebGLRenderer();
+
+  renderer.setSize( w , h );
+  document.body.appendChild( renderer.domElement );
+
+  // Adding something to the scene just so we can see if it works
+  var geometry  = new THREE.IcosahedronGeometry( 50 , 2 );
+  var material  = new THREE.MeshNormalMaterial();
+  var mesh      = new THREE.Mesh( geometry , material );
+  
+  scene.add( mesh );
+
+  // HERE IS WHERE WE WILL INITIALIZE OUR CONTROLS
+  // IN THE NEXT SLIDE
+
+}
+      </code></pre>
+
+    </div>
+
+     <div class="slide" id="leapInitialization">
+      <h1> Leap Initialization </h1>
+
+      <p>
+        We've got the THREE.JS part of the initialization out of the way, but we've done NOTHING to include
+        that sweet nectar of motion control. So lets get to work on including all of things we need to
+        create a Leap-Three-Camera-Control!
+      </p>
+      <p>
+        Keep in mind that this is the example for only ONE of the many camera controls. In later slides, we
+        will get to see how the different controls work. and play with their parameters, but for eases sake
+        for this first example, we'll keep rolling with the <code class="inline">LeapTrackballControls</code>
+      </p>
+
+      <pre><code>
+// AFTER OUR THREE.JS INITIALIZATION
+
+// first off, create our leap controller to get data from
+controller = new Leap.Controller();
+
+// To get frames rolling! 
+// Our Camera Controls, should do this on our own,
+// but its good practice to say it outright!
+controller.connect();
+
+// THIS! is where the magic is.
+// We pass in the camera ( what we are acting on )
+// and the controller ( which gives us data )
+controls = new THREE.LeapTrackballControls( camera , controller );
+
+// Any defining of parameters, you can do here , like so:
+
+controls.rotationSpeed = 20;
+
+// but these parameters can also be updated anywhere else in the program!
+
+// It is important to note that with other controls, 
+// we may pass through our scene,
+// to add markers, placeholders and other visual feedback.
+// We will explore this more in later slides
+
+      </code></pre>
+
+    </div>
+
+    
+    <div class="slide" id="animation">
+      <h1> Animation </h1>
+      <p> 
+        Now that we've got everything initialized, the only thing left to do is get frames rolling!
+      </p>
+
+      <pre><code>
+function animate(){
+
+  requestAnimationFrame( animate );
+
+  controls.update();
+  renderer.render( scene , camera );
+
+}
+
+      </code></pre>
+      <p> Easy enough, right? </p> 
+    </div>
+
+    <div class="slide" id="allTogetherNow">
+      <h1> All Together Now! </h1>
+      <p>
+        We done all the coding we need to do, so lets view it all together!
+      </p>
+      <pre><code>
+&lt;html&gt;
+  &lt;body&gt;    
+
+    &lt;script src = &quot;lib/leap.min.js&quot;                    &gt;&lt;/script&gt;
+    &lt;script src = &quot;lib/three.js&quot;                       &gt;&lt;/script&gt;
+    &lt;script src = &quot;controls/LeapTrackballControls.js&quot;  &gt;&lt;/script&gt;
+
+    &lt;script&gt;
+
+      var camera , scene, renderer;
+
+      var controller , controls;
+
+      init();
+      animate();
+
+      function init(){
+
+        var w     = window.innerWidth;
+        var h     = window.innerHeight;
+
+        scene     = new THREE.Scene();
+        camera    = new THREE.PerspectiveCamera( 50 , w / h , 1 , 1000 ); 
+        renderer  = new THREE.WebGLRenderer();
+
+        renderer.setSize( w , h );
+        document.body.appendChild( renderer.domElement );
+
+        var geometry  = new THREE.IcosahedronGeometry( 50 , 2 );
+        var material  = new THREE.MeshNormalMaterial();
+        var mesh      = new THREE.Mesh( geometry , material );
+        
+        scene.add( mesh );
+
+        controller = new Leap.Controller();
+        controller.connect();
+
+        controls = new THREE.LeapTrackballControls( camera , controller );
+        controls.rotationSpeed = 20;
+
+      }
+
+
+      function animate(){
+
+        requestAnimationFrame( animate );
+        
+        controls.update();
+        renderer.render( scene , camera );
+
+      }
+
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+      </code></pre>
+
+      <p> 
+        Hopefully this all makes sense to you. If not, please check out 
+        <a href="http://aerotwist.com/tutorials/getting-started-with-three-js/"> A TUTORIAL </a>. 
+        Or reach out to me at icohen@leapmotion.com || @cabbibo 
+      </p>
+
+    </div>
+
+    
+    <div class="slide" id="nowForTheFunStuff">
+      <h1> Now For The Fun Stuff </h1>
+      <p>
+        Congrats! You are now a graphics programmer! And a leap programmer! And super cool , and popular!
+        And you understand how to use the controls, so we can move onto describing each one in detail.
+      </p>
+      <p> 
+        Here's a really cool gif though, for your hard work up to this point!
+        <img src="img/coolGif.gif" />
+      </p>
+      <p> 
+        Whenever you are ready, head to the next slide to learn about <code class="inline">LeapTrackballControls</code>
+      </p>
+    </div>
+
+    <div class="slide" id="springControls">
+      <h1> Spring Controls </h1>
+      <p>
+        Spring controls Attatch a spring from your camera to a target, which it
+        is always looking at. When you pinch, it places a new anchor that the 
+        target will tween to, always giving you a smooth movement. To see exactly
+        what this means, try adding markers to the anchor , hand , and target
+        as described in the below code snippet
+      </p>
+      <p>Pros:</p>
+      <ul>
+        <li>Smooth like butter</li>
+        <li>Lets you fly to anywhere you want in the scene with relative ease</li>
+        <li>Once you let go, gives slowly brings you to a final resting point</li>
+      </ul>
+      <p>Cons:</p>
+      <ul>
+        <li>Moving camera near poles results in some weirdness...</li>
+        <li>Uses pinch, which removes the ability to use it for other gestures</li>
+        <li>Easy to get lost in space if you have no reference points</li>
+      </ul>
+      <p>Pairings:</p>
+      <ul>
+        <li>Space Flying Games </li>
+        <li>Plane Flying Games</li>
+        <li>A quick addition to visual experiments</li>
+      </ul>
+      <p>Called using: </p>
+      <pre><code>
+&lt;!-- Include Script --&gt;
+&lt;script src=&quot;path/to/controls/LeapEyeLookControls.js&quot;&gt;&lt;/script&gt;
+
+// Inside Init Function
+controls = new THREE.LeapSpringControls( camera , controller , scene );
+
+controls.dampening      = .75;
+controls.size           = 120;
+controls.springConstant =   1;
+controls.mass           = 100;
+controls.anchorSpeed    =  .1;
+controls.staticLength   = 100;
+
+// Adding meshes to the Anchor , Target and Hand
+var geo = new THREE.IcosahedronGeometry( 5, 2 ); 
+var mat = new THREE.MeshNormalMaterial(); 
+
+var targetMesh  = new THREE.Mesh( geo , mat );
+var anchorMesh  = new THREE.Mesh( geo , mat );
+var handMesh    = new THREE.Mesh( geo , mat );
+
+controls.addTargetMarker( targetMesh );
+controls.addAnchorMarker( anchorMesh );
+controls.addHandMarker(     handMesh );
+
+// Inside Animate Function
+controls.update();
+      </code></pre>
+
+      <p>Using the following parameters:</p>
+      <ul>
+        <li>dampening:      Tells us how quickly movement slows down </li>
+        <li>size:           Tells us size of hand movements</li>
+        <li>springConstant: Tells us value for Hooke's Law constant k</li>
+        <li>mass:           Tells us mass of camera</li>
+        <li>anchorSpeed:    Tells us how fast Anchor tweens to target 
+                            ( .5 and higher gets weird. but it shouldn't,
+                              I just forgot how to do physics. Pull request maybe ?!!???!? )</li>
+        <li>staticLength:   Tells us how far away camera comes to rest from target</li>
+      </ul>
+
+
+    </div>
+
+
+    <div class="slide" id="pointerControls">
+      <h1>Pointer Controls</h1>
+      <p>
+        The pointer controls basically has the camera always pointing at a 
+        'target', when you pinch, you begin moving the camera around the object,
+        and when you release, the camera will stop moving.
+      </p>
+      <p>Pros:</p>
+      <ul>
+        <li>Always looking at the same place, so its hard to get out of control</li>
+        <li>movements feel smoothish</li>
+        <li>Absolute positioning means that when comparing to the leap, 
+          the position will always make sense</li>
+      </ul>
+      <p>Cons:</p>
+      <ul>
+        <li>Moving camera near poles results in some weirdness</li>
+        <li>Because there is only a single target, hard to move around scene
+          unless the target is dynamically updated</li>
+        <li>Uses pinch, which removes the ability to use it for other gestures</li>
+      </ul>
+      <p>Pairings:</p>
+      <ul>
+        <li>Pointer controls work well with a single examined object</li>
+        <li>3D Modeling camera controls</li>
+        <li>A Game with a single scene that we are always looking at</li>
+        <li>A quick addition to visual experiments</li>
+      </ul>
+      <p>Called using: </p>
+      <pre><code>
+&lt;!-- Include Script --&gt;
+&lt;script src=&quot;path/to/controls/LeapPointerControls.js&quot;&gt;&lt;/script&gt;
+
+// Inside Init Function
+var controls = THREE.LeapPointerControls( camera , controller );
+
+controls.size       = 100;
+controls.speed      = .01;
+controls.dampening  = .99;
+controls.target     = new THREE.Vector3( 0 , 100 , 0 );
+
+// Inside Animate Function
+controls.update();
+      </code></pre>
+
+      <p>Using the following parameters:</p>
+      <ul>
+        
+        <li>size:       Tells us how big the motions will be, basically the spherical
+                      distance from the target</li>
+        <li>
+        dampening:  Tells us how fast the camera will slow down once we release
+                        it. also how 'smoothed' the movement will be
+        </li>
+        <li>
+        speed:      Tells us how fast the camera will follow our hand movements.
+                        This number should be between 0 and 1
+        </li>
+        <li>
+        target:     Tells us where the camera is looking. A THREE.Vector3(), 
+                        target basically defines the center of the scene
+        </li>
+      </ul>
+
+
+    </div>
+
+    
+    <div class="slide" id="eyeLookControls">
+      <h1> Leap Eye Look Controls </h1>
+      
+      <p>
+        Spring controls Attatch a spring from your camera to a target, which it
+        is always looking at. When you pinch, it places a new anchor that the 
+        target will tween to, always giving you a smooth movement. To see exactly
+        what this means, try adding markers to the anchor , hand , and target
+        as described in the below code snippet
+      </p>
+
+      <p>Pros:</p>
+      
+      <ul>
+        <li>Smooth like butter</li>
+        <li>Lets you fly to anywhere you want in the scene with relative ease</li>
+        <li>Once you let go, gives slowly brings you to a final resting point</li>
+      </ul>
+      
+      <p>Cons:</p>
+      
+      <ul>
+        <li>Moving camera near poles results in some weirdness...</li>
+        <li>Uses pinch, which removes the ability to use it for other gestures</li>
+        <li>Easy to get lost in space if you have no reference points</li>
+      </ul>
+      
+      <p>Pairings:</p>
+      
+      <ul>
+        <li>Space Flying Games </li>
+        <li>Plane Flying Games</li>
+        <li>A quick addition to visual experiments</li>
+      </ul>
+      
+      <p>Called using: </p>
+      <pre><code>&lt;!-- Include Script --&gt;
+&lt;script src=&quot;path/to/controls/LeapEyeLookControls.js&quot;&gt;&lt;/script&gt;
+
+// Inside Init Function
+controls = new THREE.LeapSpringControls( camera , controller , scene );
+
+controls.dampening      = .75;
+controls.size           = 120;
+controls.springConstant =   1;
+controls.mass           = 100;
+controls.anchorSpeed    =  .1;
+controls.staticLength   = 100;
+
+// Adding meshes to the Anchor , Target and Hand
+var geo = new THREE.IcosahedronGeometry( 5, 2 ); 
+var mat = new THREE.MeshNormalMaterial(); 
+
+var targetMesh  = new THREE.Mesh( geo , mat );
+var anchorMesh  = new THREE.Mesh( geo , mat );
+var handMesh    = new THREE.Mesh( geo , mat );
+
+controls.addTargetMarker( targetMesh );
+controls.addAnchorMarker( anchorMesh );
+controls.addHandMarker(     handMesh );
+
+// Inside Animate Function
+controls.update();
+      </code></pre>
+
+      <p>Using the following parameters:</p>
+      
+      <ul>
+        <li>dampening:      Tells us how quickly movement slows down </li>
+        <li>size:           Tells us size of hand movements</li>
+        <li>springConstant: Tells us value for Hooke's Law constant k</li>
+        <li>mass:           Tells us mass of camera</li>
+        <li>anchorSpeed:    Tells us how fast Anchor tweens to target 
+                            ( .5 and higher gets weird. but it shouldn't,
+                              I just forgot how to do physics. Pull request maybe ?!!???!? )</li>
+        <li>staticLength:   Tells us how far away camera comes to rest from target</li>
+      </ul>
+
+    </div>
+
+    <div class="slide" id="twoHandControls">
+      <h1> Two Hand Controls </h1>
+      <p>Two Hand controls let you translate around a scene by pinching with a single
+      hand, and rotate scene when you pinch with two hands</p>
+      <p>Pros:</p>
+      <ul>
+      <li>You feel a bit like iron man</li>
+      <li>You don't accidentally rotate the scene when you don't want to </li>
+      <li>Once you let go, gives slowly brings you to a final resting point</li>
+      </ul>
+      <p>Cons:</p>
+      <ul>
+      <li>Sometimes difficult for tracking to pick up with two hands in the field</li>
+      <li>Uses pinch, which removes the ability to use it for other gestures</li>
+      <li>Using two hands might be more tiring</li>
+      </ul>
+      <p>Pairings:</p>
+      <ul>
+      <li>Quickly exploring large swatches of land</li>
+      <li>Manipulating large scenes</li>
+      <li>A quick addition to visual experiments</li>
+      </ul>
+      <p>Called using: </p>
+      <pre><code>
+&lt;!-- Include Script --&gt;
+&lt;script src=&quot;path/to/controls/LeapEyeLookControls.js&quot;&gt;&lt;/script&gt;
+
+// Inside Init Function
+controls = new THREE.LeapTwoHandControls( camera , controller , scene );
+
+controls.translationSpeed   = 20;
+controls.translationDecay   = 0.3;
+controls.scaleDecay         = 0.5;
+controls.rotationSlerp      = 0.8;
+controls.rotationSpeed      = 4;
+controls.pinchThreshold     = 0.5;
+controls.transSmoothing     = 0.5;
+controls.rotationSmoothing  = 0.2;
+
+// Inside Animate Function
+controls.update();
+      </code></pre>
+
+      <p>TODO: Description of Parameters</p>
+
+
+    </div>
+
+    <div class="slide" id="pinchRotateControls">
+      <h1> Pinch Rotate Controls </h1>
+      <p>Pinch Rotate Controls are nearly Identical to the Trackball controls, except that they use pinch in order to move the camera. As well, they have the ability to zoom in and out, by simply pinching and moving inwards or outwards. In order to define when this happens, it looks at the movement in Z vs the movement in X and Y, and compares the too to see if there is more movement in Z than XY or vis versa</p>
+      <p>Pros:</p>
+      <ul>
+      <li>Supersmooth. </li>
+      <li>No Gimbal Lock!</li>
+      </ul>
+      <p>Cons:</p>
+      <ul>
+      <li>Only moves around single point</li>
+      <li>Controls take some getting used to for some people</li>
+      <li>No clear up vector, which leads to possible deorientation</li>
+      <li>Uses Pinch :-( </li>
+      </ul>
+      <p>Pairings:</p>
+      <ul>
+      <li>3D Modeling camera controls</li>
+      <li>A quick addition to visual experiments</li>
+      </ul>
+      <p>Called using: </p>
+      <pre><code>
+&lt;!-- Include Script --&gt;
+&lt;script src=&quot;path/to/controls/LeapPinchRotateControls.js&quot;&gt;&lt;/script&gt;
+
+// Inside Init Function
+var controls = THREE.LeapPinchRotateControls( camera , controller );
+
+controls.rotationSpeed            =   10;
+controls.rotationLowDampening     =  .98;
+controls.rotationHighDampening    =   .7;
+controls.zoom                     =   40;
+controls.zoomDampening            =   .6;
+controls.zoomSpeedRatio           =   10;
+controls.zoomCutoff               =   .9;
+controls.zoomEnabled              = true;
+controls.zoomVsRotate             =    1;
+controls.minZoom                  =   20;
+controls.maxZoom                  =   80;
+
+// Inside Animate Function
+controls.update();
+      </code></pre>
+
+      <p>Using the following parameters:</p>
+      <ul>
+      <li>rotationSpeed:          Tells us the speed of the rotation</li>
+      <li>rotationLowDampening:   Tells us how quickly the rotation will slow down when in moving state</li>
+      <li>rotationHighDampening:  Tells us how quickly the rotation will slow down when in stopping state</li>
+      <li>zoomEnabled:            Tells us if zooming is enabled</li>
+      <li>zoom:                   Tells us how close we are to the center</li>
+      <li>zoomDampening:          Tells us how quickly the zoom will slow down</li>
+      <li>zoomSpeedRatio:         Tells us how quickly the zoom moves compared to palm</li>
+      <li>zoomCutoff:             Tells us how forward facing our palm needs to be to zoom</li>
+      <li>zoomVsRotate:           Tells us how much more we need to be moving in Z than XY to start zooming, vs rotating</li>
+      <li>minZoom:                Tells us the closest we can be</li>
+      <li>maxZoom:                Tells us the farthest we can be</li>
+      </ul>
+
+    </div>
+
+    <div class="slide" id="trackballControls">
+      <h1>Leap Trackball Controls</h1>
+      
+      <p>
+        Trackball Controls let you swipe the camera around a target, as if you
+        were pushing a giant bowling ball around ( your hand is always behind the ball )
+        Also , if you turn your hand straight up, and zoom is enabled, you will
+        stop spinning and start zooming, based on moving your hand forward and backwards
+      </p>
+      
+      <p>Pros:</p>
+      
+      <ul>
+        <li>Supersmooth. </li>
+        <li>No Gimbal Lock!</li>
+        <li>No use of Pinch! </li>
+      </ul>
+      
+      <p>Cons:</p>
+      
+      <ul>
+        <li>Only moves around single point</li>
+        <li>Controls take some getting used to for some people</li>
+        <li>No clear up vector, which leads to possible deorientation</li>
+      </ul>
+      
+      <p>Pairings:</p>
+      
+      <ul>
+        <li>3D Modeling camera controls</li>
+        <li>A quick addition to visual experiments</li>
+      </ul>
+      
+      <p>Called using: </p>
+      
+      <pre><code>
+&lt;!-- Include Script --&gt;
+&lt;script src=&quot;path/to/controls/LeapTrackballControls.js&quot;&gt;&lt;/script&gt;
+
+// Inside Init Function
+var controls = THREE.LeapTrackballControls( camera , controller );
+
+controls.rotationSpeed            = 10;
+controls.rotationDampening        = .98;
+controls.zoom                     = 40;
+controls.zoomDampening            = .6;
+controls.zoomCutoff               = .9;
+
+controls.minZoom                  = 20;
+controls.maxZoom                  = 80;
+
+// Inside Animate Function
+controls.update();
+      </code></pre>
+
+      <p>Using the following parameters:</p>
+      
+      <ul>
+        <li>rotationSpeed:      Tells us the speed of the rotation</li>
+        <li>rotationDampening:  Tells us how quickly the rotation will slow down</li>
+        <li>zoomEnabled:        Tells us if zooming is enabled</li>
+        <li>zoom:               Tells us how close we are to the center</li>
+        <li>zoomDampening:      Tells us how quickly the zoom will slow down</li>
+        <li>zoomCutoff:         Tells us how forward facing our palm needs to be to zoom</li>
+        <li>minZoom:            Tells us the closest we can be</li>
+        <li>maxZoom:            Tells us the farthest we can be</li>
+      </ul>
+
+    </div>
+
+    <div class="slide" id="paddleControls">
+      <h1> Paddle Controls </h1>
+      <p>Paddle Controls Let you 'Paddle' Around a scene, the way that you would paddle 
+      through water. Pretty cool huh?</p>
+      <p>Pros:</p>
+      <ul>
+      <li>Supersmooth. </li>
+      <li>Makes you feel a bit like a god</li>
+      <li>No Gimbal Lock!</li>
+      <li>No Pinch!</li>
+      </ul>
+      <p>Cons:</p>
+      <ul>
+      <li>No Rotate...</li>
+      <li>Controls take some getting used to for some people</li>
+      </ul>
+      <p>Pairings:</p>
+      <ul>
+      <li>Great for moving a scene where you want don't want to rotate</li>
+      <li>Great for 'infinite' terrains</li>
+      <li>Great to combine with other methods of control!</li>
+      </ul>
+      <p>Called using: </p>
+      <pre><code>&lt;!-- Include Script --&gt;
+      &lt;script src=&quot;path/to/controls/LeapPaddleControls.js&quot;&gt;&lt;/script&gt;
+
+      // Inside Init Function
+      var controls = THREE.LeapPaddleControls( camera , controller );
+
+      controls.weakDampening        = .99;
+      controls.strongDampening      = .9;
+      controls.fingerMatchCutoff    = .5;
+      controls.velocityMatchCutoff  =.5;
+      controls.fingerMatchPower     = 5;
+      controls.velocityMatchPower   = 5;
+      controls.movementSpeed        = 1;
+      controls.maxSpeed             = 10; 
+
+      // Inside Animate Function
+      controls.update();
+      </code></pre>
+
+      <p>Using the following parameters:</p>
+      <ul>
+      <li>weakDampening:          Tells us dampening when there is a hand in field</li>
+      <li>strongDampening:        Tells us dampening when there is no hand in field</li>
+      <li>fingerMatchCutoff:      Tells us the number at which we will stop moving if the finger direction does not match the hand direction</li>
+      <li>velocityMatchCutoff:    Tells us the number at which we will stop moving if the finger velocity does not match the hand normal</li>
+      <li>fingerMatchPower:       Tells us the amount that the fingerMatch will be raised to to give a higher or lower turn on for movement</li>
+      <li>velocityMatchPower:     Tells us the amount that the velocityMatch will be raised to to give a higher or lower turn on for movement</li>
+      <li>movementSpeed:          Tells us how fast we are moving, by multiplying the force</li>
+      <li>maxSpeed:               Tells us what we will limit the cameras speed to</li>
+      </ul>
+
+
+    </div>
+
+  </div>
+
+
+
+  <!--
+
+
+      Javascript for controlling this whole thing!
+
+
+  -->
+
+  <script src="lib/jquery.min.js"   ></script>
+  <script src="lib/three.min.js"    ></script>
+  <script src="lib/leap.min.js"     ></script>
+  <script src="lib/dat.gui.min.js"  ></script>
+
+
+  <script src="controls/LeapSpringControls.js"      ></script>
+  <script src="controls/LeapPointerControls.js"     ></script>
+  <script src="controls/LeapEyeLookControls.js"     ></script>
+  <script src="controls/LeapTwoHandControls.js"     ></script>
+  <script src="controls/LeapPinchRotateControls.js" ></script>
+  <script src="controls/LeapTrackballControls.js"   ></script>
+  <script src="controls/LeapPaddleControls.js"      ></script>
+  
+  <!--
+
+    ORDER GOES:
+
+      Spring
+      Pointer
+      EyeLook
+      TwoHand
+      PinchRotate
+      Trackball
+      Paddle
+
+  -->
+  
+  
+  <script>
+
+    /*
+
+     PRETTY GL BACKGROUND!
+
+    */
+
+    var camera , scene, renderer;
+
+    var controller , controls = [];
+    var activeControl;
+    
+    var activeSlide = 0;
+    var totalSlides = 14;
+
+    var slides = $('.slide');
+    var slideCounter = $('#slideCounter');
+    var guidat = $('.guidat');
+    console.log( slides );
+
+    
+    init();
+    animate();
+    activateSlide( activeSlide );
+    resizeLayout();
+
+
+    function nextSlide(){
+
+      console.log('YO');
+      activeSlide ++;
+      if( activeSlide == totalSlides ) activeSlide = totalSlides - 1;
+      activateSlide( activeSlide );
+
+    }
+
+    function previousSlide(){
+
+      activeSlide --;
+      if( activeSlide < 0 ) activeSlide = 0;
+      activateSlide( activeSlide );
+
+    }
+
+    function activateSlide( slideNum ){
+
+      activeSlide = slideNum;
+
+      activateGUI( slideNum );
+      activateControl( slideNum );
+
+      for( var i = 0; i < slides.length; i++ ){
+
+        if( i != slideNum ){
+          slides[i].classList.add( 'inactiveSlide' );
+        }else{
+          slides[i].classList.add( 'activeSlide' );
+          slides[i].classList.remove( 'inactiveSlide' );
+        }
+
+      }
+
+      slideCounter[0].innerHTML = slideNum + " / " + totalSlides ;
+    }
+
+
+    function activateControl( slideNum ){
+
+      var id = slideNum - 8;
+     
+      if( controls[id] ){
+        activeControl = controls[id];
+      }else{
+        activeControl = undefined;
+      }
+
+    }
+
+    function activateGUI( slideNum ){
+
+      var guidat = $('.guidat');
+      var id = slideNum - 8;
+
+      console.log('yoss');
+
+        for( var i = 0; i < guidat.length; i++ ){
+
+          console.log( guidat[i] );
+          if( i != id ){
+            guidat[i].classList.add( 'inactiveGui' );
+          }else{
+            guidat[i].classList.add( 'activeGui' );
+            guidat[i].classList.remove( 'inactiveGui' );
+          }
+        }
+
+
+    }
+
+    function resizeLayout(){
+
+      var slides = $('#slides');
+      var header = $('#header');
+
+      var wWidth = window.innerWidth;
+      var wHeight = window.innerHeight;
+
+      console.log( slides.height() );
+      console.log( header.height() );
+
+      var newSlideHeight = wHeight - header.height();
+      slides.height( newSlideHeight );
+
+    }
+
+
+      function init(){
+
+        console.log('hello');
+
+        var w     = window.innerWidth;
+        var h     = window.innerHeight;
+
+        scene     = new THREE.Scene();
+        camera    = new THREE.PerspectiveCamera( 50 , w / h , 1 , 10000 );
+        renderer  = new THREE.WebGLRenderer();
+
+        renderer.setSize( w , h );
+        renderer.domElement.id = "scene";
+        document.body.appendChild( renderer.domElement );
+
+        var geometry  = new THREE.IcosahedronGeometry( 50 , 2 );
+        var material  = new THREE.MeshNormalMaterial({side:THREE.DoubleSide});
+
+        skybox = new THREE.Mesh( geometry , material );
+        skybox.scale.multiplyScalar( 100 );
+        skybox.position = camera.position;
+        scene.add( skybox );
+
+        for( var i = 0; i < 300; i++ ){
+          var mesh = new THREE.Mesh( geometry , material );
+          mesh.position.x = (Math.random() - .5 ) * 5000;
+          mesh.position.y = (Math.random() - .5 ) * 5000;
+          mesh.position.z = (Math.random() - .5 ) * 5000;
+          scene.add( mesh );
+        }
+        
+
+        var geometry = new THREE.Geometry();
+        var material = new THREE.ParticleSystemMaterial({
+          size:10,
+          color:0x000000
+        });
+
+  
+        for( var i = 0; i < 20000; i++ ){
+
+          var x = (Math.random() - .5 ) * 5000;
+          var y = (Math.random() - .5 ) * 5000;
+          var z = (Math.random() - .5 ) * 5000;
+
+          geometry.vertices.push( new THREE.Vector3( x , y , z ) );
+
+
+        }
+
+        var particles = new THREE.ParticleSystem( geometry , material );
+        scene.add( particles );
+
+
+        camera.position.z = 200;
+        controller = new Leap.Controller();
+        controller.connect();
+
+
+        /*
+
+           Spring Controls
+
+        */
+        var control = new THREE.LeapSpringControls( camera , controller , scene );
+
+        control.gui = new DAT.GUI();
+
+        control.gui.domElement.class = 'cameraControlGUI';
+        control.gui.domElement.id    = 'springControls';
+
+        control.params = {
+          dampening      : .75,
+          size           : 120,
+          springConstant :   1,
+          mass           : 100,
+          anchorSpeed    :  .1,
+          staticLength   : 100,
+        }
+       
+        for( propt in control.params ){
+          control[propt] = control.params[propt]
+        }
+
+        control.gui.add( control.params , 'dampening' , .5 , .999     );
+        control.gui.add( control.params , 'size' , 0 , 5000           );
+        control.gui.add( control.params , 'springConstant' , 0 , 100  );
+        control.gui.add( control.params , 'mass' , .0001 , 100        );
+        control.gui.add( control.params , 'anchorSpeed' , .0 , .6     );
+        control.gui.add( control.params , 'staticLength' , 0 , 5000   );
+       
+        controls.push( control );
+
+        /*
+
+           Pointer Controls
+
+        */
+        var control = new THREE.LeapPointerControls( camera , controller );
+
+        control.gui = new DAT.GUI();
+
+        control.gui.domElement.class = 'cameraControlGUI';
+        control.gui.domElement.id    = 'pointerControls';
+
+        controls.size       = 100;
+        control.params = {
+          size        : 120,
+          dampening   :   .99,
+          speed       : .01,
+        }
+       
+        for( propt in control.params ){
+          control[propt] = control.params[propt]
+        }
+
+        control.gui.add( control.params , 'dampening' , .5 , .999     );
+        control.gui.add( control.params , 'size' , 0 , 5000           );
+        control.gui.add( control.params , 'speed' , 0 , 10 );
+       
+        controls.push( control );
+
+
+
+
+        /*
+
+          Trackball Controls
+
+        */
+        var control = new THREE.LeapTrackballControls( camera , controller );
+
+        control.gui = new DAT.GUI();
+
+        control.gui.domElement.class = 'cameraControlGUI';
+        control.gui.domElement.id    = 'trackballControls';
+
+
+        control.params = {
+          rotationSpeed            :   10,
+          rotationLowDampening     :  .98,
+          rotationHighDampening    :   .7,
+          zoom                     :   40,
+          zoomDampening            :   .6,
+          zoomSpeedRatio           :   10,
+          zoomCutoff               :   .9,
+          zoomEnabled              : true,
+          minZoom                  :   20,
+          maxZoom                  :   80,
+        }
+
+        for( propt in control.params ){
+          control[propt] = control.params[propt]
+        }
+
+        control.gui.add( control.params , 'rotationSpeed' , 0 , 100             );
+        control.gui.add( control.params , 'rotationLowDampening' , .7 , .99999  );
+        control.gui.add( control.params , 'rotationHighDampening' , .7 , .99999 );
+        control.gui.add( control.params , 'zoom' , 10 , 10000                   );
+        control.gui.add( control.params , 'zoomDampening' , .5 , .99999         );
+        control.gui.add( control.params , 'zoomSpeedRatio' , 0 , 100            );
+        control.gui.add( control.params , 'zoomEnabled'                         );
+        control.gui.add( control.params , 'minZoom' , 10 , 10000                );
+        control.gui.add( control.params , 'maxZoom' , 10 , 10000                );
+      
+        console.log( controls );
+        controls.push( control );
+
+
+        var control = new THREE.LeapPinchRotateControls( camera , controller );
+        var control = new THREE.LeapEyeLookControls( camera , controller , scene );
+        var control = new THREE.LeapTwoHandControls( camera , controller );
+        var control = new THREE.LeapPaddleControls( camera , controller );
+        var control = new THREE.LeapPointerControls( camera , controller );
+        var control = new THREE.LeapSpringControls( camera , controller , scene );
+        controls.push( control );
+
+      }
+
+
+      function animate(){
+
+        if( activeControl ){
+          activeControl.update();
+        }
+        //controls.update();
+
+        renderer.render( scene , camera );
+        requestAnimationFrame( animate );
+        
+      }
+
+
+
+  </script>
   </body>
 </html>
