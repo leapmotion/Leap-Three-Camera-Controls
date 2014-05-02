@@ -874,7 +874,8 @@ controls.update();
       <li>Great to combine with other methods of control!</li>
       </ul>
       <p>Called using: </p>
-      <pre><code>&lt;!-- Include Script --&gt;
+      <pre><code>
+      &lt;!-- Include Script --&gt;
       &lt;script src=&quot;path/to/controls/LeapPaddleControls.js&quot;&gt;&lt;/script&gt;
 
       // Inside Init Function
@@ -980,8 +981,10 @@ controls.update();
     function nextSlide(){
 
       console.log('YO');
+      if( activeSlide == totalSlides ) activeSlide = totalSlides-1;
+
       activeSlide ++;
-      if( activeSlide == totalSlides ) activeSlide = totalSlides - 1;
+      //if( activeSlide == totalSlides ) activeSlide = totalSlides;
       activateSlide( activeSlide );
 
     }
@@ -1150,6 +1153,15 @@ controls.update();
           control[propt] = control.params[propt]
         }
 
+        var geo   = new THREE.IcosahedronGeometry( 5 , 2 );
+        var mat   = new THREE.MeshNormalMaterial();
+        var mesh  = new THREE.Mesh( geo , mat );
+
+        control.addHandMarker( mesh.clone() );
+        control.addTargetMarker( mesh.clone() );
+        control.addAnchorMarker( mesh.clone() );
+
+
         control.gui.add( control.params , 'dampening' , .5 , .999     );
         control.gui.add( control.params , 'size' , 0 , 5000           );
         control.gui.add( control.params , 'springConstant' , 0 , 100  );
@@ -1187,6 +1199,147 @@ controls.update();
         control.gui.add( control.params , 'speed' , 0 , 10 );
        
         controls.push( control );
+
+
+
+        /*
+
+           Eye Look Controls
+
+        */
+
+        var control = new THREE.LeapEyeLookControls( camera , controller , scene );
+
+        control.gui = new DAT.GUI();
+
+        control.gui.domElement.class = 'cameraControlGUI';
+        control.gui.domElement.id    = 'eyeLookControls';
+
+        control.params = {
+          lookSize       : 10,
+          lookMass       : 10,
+          lookSpeed      : 10,
+          lookDampening  : .9,
+
+          eyeSize        : 10,
+          eyeMass        : 10,
+          eyeSpeed       : 10,
+          eyeDampening   : .9,
+        }
+       
+        for( propt in control.params ){
+          control[propt] = control.params[propt]
+        }
+
+        // If you want to have a marker for your eye
+        // Which you probably do...
+
+        var geo   = new THREE.IcosahedronGeometry( 5 , 2 );
+        var mat   = new THREE.MeshNormalMaterial();
+        var mesh  = new THREE.Mesh( geo , mat );
+
+        control.addLookMarker( mesh );
+
+        control.gui.add( control.params , 'lookSize'       , 0  , 1000  );
+        control.gui.add( control.params , 'lookMass'       , 0  , 100   );
+        control.gui.add( control.params , 'lookSpeed'      , 0  , 1000  );
+        control.gui.add( control.params , 'lookDampening'  , .5 , .999  );
+
+        control.gui.add( control.params , 'eyeSize'        , 0  , 1000  );
+        control.gui.add( control.params , 'eyeMass'        , 0  , 100   );
+        control.gui.add( control.params , 'eyeSpeed'       , 0  , 1000  );
+        control.gui.add( control.params , 'eyeDampening'   , .5 , .999  );
+       
+        controls.push( control );
+
+
+
+
+        /*
+
+           Two Hand Controls
+
+        */
+
+        var control = new THREE.LeapTwoHandControls( camera , controller );
+
+        control.gui = new DAT.GUI();
+
+        control.gui.domElement.class = 'cameraControlGUI';
+        control.gui.domElement.id    = 'twoHandControls';
+
+        control.params = {
+          translationSpeed   : 20,
+          translationDecay   : 0.3,
+          scaleDecay         : 0.5,
+          rotationSlerp      : 0.8,
+          rotationSpeed      : 4,
+          pinchThreshold     : 0.5,
+          transSmoothing     : 0.5,
+          rotationSmoothing  : 0.2,
+                   
+        }
+       
+        for( propt in control.params ){
+          control[propt] = control.params[propt]
+        }
+
+        control.gui.add( control.params , 'translationSpeed'    , 0  , 1000  );
+        control.gui.add( control.params , 'translationDecay'    , 0  , 100   );
+        control.gui.add( control.params , 'scaleDecay'          , 0  , 1000  );
+        control.gui.add( control.params , 'rotationSlerp'       , .5 , .999  );
+        control.gui.add( control.params , 'rotationSpeed'       , 0  , 1000  );
+        control.gui.add( control.params , 'pinchThreshold'      , 0  , 100   );
+        control.gui.add( control.params , 'transSmoothing'      , 0  , 1000  );
+        control.gui.add( control.params , 'rotationSmoothing'   , .5 , .999  );
+
+       
+        controls.push( control );
+
+        /*
+
+           Pinch Rotate Controls
+
+        */
+
+        var control = new THREE.LeapPinchRotateControls( camera , controller );
+
+        control.gui = new DAT.GUI();
+
+        control.gui.domElement.class = 'cameraControlGUI';
+        control.gui.domElement.id    = 'pinchRotateControls';
+
+        control.params = {
+          rotationSpeed            :   10,
+          rotationLowDampening     :  .98,
+          rotationHighDampening    :   .7,
+          zoom                     :   40,
+          zoomDampening            :   .6,
+          zoomSpeedRatio           :   10,
+          zoomCutoff               :   .9,
+          zoomEnabled              : true,
+          minZoom                  :   20,
+          maxZoom                  :   80,
+        }
+
+        for( propt in control.params ){
+          control[propt] = control.params[propt]
+        }
+
+        control.gui.add( control.params , 'rotationSpeed' , 0 , 100             );
+        control.gui.add( control.params , 'rotationLowDampening' , .7 , .99999  );
+        control.gui.add( control.params , 'rotationHighDampening' , .7 , .99999 );
+        control.gui.add( control.params , 'zoom' , 10 , 10000                   );
+        control.gui.add( control.params , 'zoomDampening' , .5 , .99999         );
+        control.gui.add( control.params , 'zoomSpeedRatio' , 0 , 100            );
+        control.gui.add( control.params , 'zoomVsRotate' , 0 , 10               );
+        control.gui.add( control.params , 'zoomEnabled'                         );
+        control.gui.add( control.params , 'minZoom' , 10 , 10000                );
+        control.gui.add( control.params , 'maxZoom' , 10 , 10000                );
+      
+        controls.push( control );
+
+
 
 
 
@@ -1231,17 +1384,51 @@ controls.update();
         control.gui.add( control.params , 'minZoom' , 10 , 10000                );
         control.gui.add( control.params , 'maxZoom' , 10 , 10000                );
       
-        console.log( controls );
         controls.push( control );
 
 
-        var control = new THREE.LeapPinchRotateControls( camera , controller );
-        var control = new THREE.LeapEyeLookControls( camera , controller , scene );
-        var control = new THREE.LeapTwoHandControls( camera , controller );
+         /*
+
+          Paddle Controls
+
+        */
         var control = new THREE.LeapPaddleControls( camera , controller );
-        var control = new THREE.LeapPointerControls( camera , controller );
-        var control = new THREE.LeapSpringControls( camera , controller , scene );
+
+        control.gui = new DAT.GUI();
+
+        control.gui.domElement.class = 'cameraControlGUI';
+        control.gui.domElement.id    = 'paddleControls';
+
+        control.params = {
+          weakDampening        : .99,
+          strongDampening      :  .9,
+          fingerMatchCutoff    :  .5,
+          velocityMatchCutoff  :  .5,
+          fingerMatchPower     :   5,
+          velocityMatchPower   :   5,
+          movementSpeed        :   1,
+          maxSpeed             :  10, 
+        }        
+
+
+        for( propt in control.params ){
+          control[propt] = control.params[propt]
+        }
+
+        control.gui.add( control.params , 'weakDampening'         , .5  , .999  );
+        control.gui.add( control.params , 'strongDampening'       , .5  , .999  );
+        control.gui.add( control.params , 'fingerMatchCutoff'     , 0   , 1     );
+        control.gui.add( control.params , 'velocityMatchCutoff'   , 0   , 1     );
+        control.gui.add( control.params , 'fingerMatchPower'      , 0   , 10    );
+        control.gui.add( control.params , 'velocityMatchPower'    , 0   , 10    );
+        control.gui.add( control.params , 'movementSpeed'         , 0   , 100   );
+        control.gui.add( control.params , 'maxSpeed'              , 0   , 1000  );
+
         controls.push( control );
+
+
+
+
 
       }
 
