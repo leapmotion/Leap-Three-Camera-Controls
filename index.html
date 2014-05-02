@@ -76,6 +76,11 @@
         left: 500px;
         top:0px;
       }
+      #toggleInfo{
+        position:absolute;
+        left: 700px;
+        top:0px;
+      }
 
       #socialLinks{
         position:absolute;
@@ -93,6 +98,14 @@
 
       }
       
+      #header{
+        -webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+      }
       #header > div > a{
         background:#222;
         cursor:pointer;
@@ -101,6 +114,7 @@
       #header > div > a:hover{
         background:#444;
         text-decoration:none;
+      
       }
 
     
@@ -207,6 +221,9 @@ right: -20;
 
     <div id="resetCamera">
       <a onClick="resetCamera()"> RESET CAMERA </a>
+    </div>
+    <div id="toggleInfo">
+      <a onClick="toggleInfo()"> TOGGLE INFO </a>
     </div>
     <div id="socialLinks">
       <a href="TWITTERLINK"><img src="img/twitter.png"/></a>
@@ -1065,6 +1082,12 @@ controls.update();
     }
 
 
+    function toggleInfo(){
+
+      console.log('hellos');
+      $("#slides").toggle();
+
+    }
     function activateControl( slideNum ){
 
       var id = slideNum - 8;
