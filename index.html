@@ -28,10 +28,12 @@
        a{
         color:#fff;
         text-decoration:none;
+        opacity: .6;
       }
 
       a:hover{
         text-decoration:underline;
+        opacity:1;
       }
       code{
 
@@ -50,6 +52,7 @@
         display:inline;
       }
 
+
       #header{
         width:100%;
         background:#000;
@@ -65,6 +68,13 @@
         padding:10px;
       }
 
+      #header > #mainTitle{
+
+        width:300px;
+        display: inline-block;
+        margin:-10px;
+
+      }
       #slideControls{
         position:absolute;
         left: 420px;
@@ -131,6 +141,32 @@ user-select: none;
       #socialLinks > a:hover{
         background:#f00;
       }
+
+
+      #downloadLinks{
+
+        position:absolute;
+        bottom:0px;
+        right:0px;
+        text-align:right;
+        padding: 20px;
+
+      }
+
+      #downloadLinks > h1{
+  
+        font-size:20px;
+        color:#fff;
+        border-bottom:1px solid white;
+
+      }
+      #downloadLinks > a{
+        opacity:.5;
+      }
+      #downloadLinks > a:hover{
+        opacity:1;
+      }
+
 
       .inactiveSlide{
 
@@ -203,8 +239,8 @@ user-select: none;
       }
 
       #guidat{
-top: 51px;
-right: -20;
+        top: 51px;
+        right: -20;
       }
     </style>
 
@@ -212,7 +248,7 @@ right: -20;
 
   <body>
   <div id="header">
-    <div id="title"> Leap Three Camera Controls </div>
+    <div id="mainTitle"> Leap Three Camera Controls </div>
     <div id="slideCounter"> 0 / 12 </div>
     <div id="slideControls">
       <a onClick="previousSlide()">&lt;</a>
@@ -226,16 +262,25 @@ right: -20;
       <a onClick="toggleInfo()"> TOGGLE INFO </a>
     </div>
     <div id="socialLinks">
-      <a href="TWITTERLINK"><img src="img/twitter.png"/></a>
-      <a href="FACEBOOKLINK"><img src="img/facebook.png"/></a>
-      <a href="GITHUBLINK"><img src="img/github.png"/></a>
-      <a href="LEAPDEVLINK"><img src="img/leapmotion.png"/></a>
+      <a target="_blank" href="http://twitter.com/share?text=Learn%20to%20make%20your%20%23threejs%20projects%20explorable%20with%20@LeapMotion&url=http://leapmotion.github.io/Leap-Three-Camera-Controls/">
+        
+        <img src="img/twitter.png"/>
+      </a>
+      <a target="_blank" href="http://www.facebook.com/sharer.php?u=http://leapmotion.github.io/Leap-Three-Camera-Controls/"><img src="img/facebook.png"/></a>
+      <a target="_blank" href="https://github.com/leapmotion/Leap-Three-Camera-Controls"><img src="img/github.png"/></a>
+      <a target="_blank" href="https://developer.leapmotion.com/"><img src="img/leapmotion.png"/></a>
     </div>
+  </div>
+
+  <div id="downloadLinks">
+    <h1> DOWNLOADS </h1>
+    <a href="example.zip"> EXAMPLE </a><br/>
+    <a href="controls.zip"> CONTROLS </a><br/>
   </div>
   <div id="slides">
   
     <div class="slide" id="intro">
-      <h1> Getting Started </h1>
+      <h1> Leap Three Camera Controls </h1>
       <p> 
         Have you ever used Three.js? Have you ever wanted to see your work in 3D? 
         Have you wondered how we got here, what the meaning of life is?
@@ -260,10 +305,15 @@ right: -20;
         where we will learn how to start making 3D Leapable!
       </p>
       <p> 
-        Keep in mind that at any point during this process, you can 
-        <a href="LINKTOSOURCE"> DOWNLOAD THE EXAMPLE SOURCE </a>
-        to start playing right away!
-      </p>
+        Please keep in mind that these controls are works in progress! 
+        If you have ideas on how they could be made better, have ideas of your own, 
+        or just want to tell me about typos / bugs,
+        <a target="_blank" href="https://github.com/leapmotion/Leap-Three-Camera-Controls"> Check out the Repo </a>
+      or
+      <a target="_blank" href="https://twitter.com/cabbibo"> Hit me up on Twitter </a>
+
+              </p>
+      <h3><a href="example.zip"> DOWNLOADING THE EXAMPLE SOURCE </a></h3>
     </div>
 
     <div class="slide" id="includingScripts">
@@ -289,6 +339,8 @@ right: -20;
       <p>
         Next Slide we'll get the Camera set up, and initialize our controller!
       </p>
+
+      <h3><a href="example.zip"> DOWNLOAD THE EXAMPLE SOURCE </a></h3>
     </div>
 
     <div class="slide" id="globalVariables">
@@ -313,6 +365,9 @@ var controls;
 // our three.js variables
 var scene , camera , renderer;
       </code></pre>
+
+            <h3><a href="example.zip"> DOWNLOAD THE EXAMPLE SOURCE </a></h3>
+
 
     </div>
 
@@ -357,6 +412,8 @@ function init(){
 
 }
       </code></pre>
+
+            <h3><a href="example.zip"> DOWNLOAD THE EXAMPLE SOURCE </a></h3>
 
     </div>
 
@@ -403,6 +460,8 @@ controls.rotationSpeed = 20;
 
       </code></pre>
 
+            <h3><a href="example.zip"> DOWNLOAD THE EXAMPLE SOURCE </a></h3>
+
     </div>
 
     
@@ -423,7 +482,10 @@ function animate(){
 }
 
       </code></pre>
-      <p> Easy enough, right? </p> 
+      <p> Easy enough, right? </p>
+
+      <h3><a href="example.zip"> DOWNLOAD THE EXAMPLE SOURCE </a></h3>
+      
     </div>
 
     <div class="slide" id="allTogetherNow">
@@ -495,6 +557,9 @@ function animate(){
         Or reach out to me at icohen@leapmotion.com || @cabbibo 
       </p>
 
+      <h3><a href="example.zip"> DOWNLOAD THE EXAMPLE SOURCE </a></h3>
+
+
     </div>
 
     
@@ -509,7 +574,7 @@ function animate(){
         <img src="img/coolGif.gif" />
       </p>
       <p> 
-        Whenever you are ready, head to the next slide to learn about <code class="inline">LeapSpringControlsControls</code>
+        Whenever you are ready, head to the next slide to learn about <code class="inline">LeapSpringControls</code>
       </p>
     </div>
 
@@ -583,6 +648,8 @@ controls.update();
         <li>staticLength:   Tells us how far away camera comes to rest from target</li>
       </ul>
 
+      <h3><a target="_blank" href="controls/LeapSpringControls.js"> SEE SOURCE </a></h3>
+
 
     </div>
 
@@ -652,6 +719,8 @@ controls.update();
       </ul>
 
 
+      <h3><a target="_blank" href="controls/LeapPointerControls.js"> SEE SOURCE </a></h3>
+      
     </div>
 
     
@@ -733,6 +802,7 @@ controls.update();
         <li>staticLength:   Tells us how far away camera comes to rest from target</li>
       </ul>
 
+      <h3><a target="_blank" href="controls/LeapEyeLookControls.js"> SEE SOURCE </a></h3>
     </div>
 
     <div class="slide" id="twoHandControls">
@@ -778,7 +848,9 @@ controls.rotationSmoothing  = 0.2;
 controls.update();
       </code></pre>
 
-      <p>TODO: Description of Parameters</p>
+      <h3><a target="_blank" href="controls/LeapTwoHandControls.js"> SEE SOURCE </a></h3>
+      
+      <!--<p>TODO: Description of Parameters</p>-->
 
 
     </div>
@@ -842,6 +914,7 @@ controls.update();
       <li>maxZoom:                Tells us the farthest we can be</li>
       </ul>
 
+            <h3><a target="_blank" href="controls/LeapPinchRotateControls.js"> SEE SOURCE </a></h3>
     </div>
 
     <div class="slide" id="trackballControls">
@@ -911,7 +984,7 @@ controls.update();
         <li>minZoom:            Tells us the closest we can be</li>
         <li>maxZoom:            Tells us the farthest we can be</li>
       </ul>
-
+      <h3><a target="_blank" href="controls/LeapTrackballControls.js"> SEE SOURCE </a></h3>
     </div>
 
     <div class="slide" id="paddleControls">
@@ -969,7 +1042,7 @@ controls.update();
       <li>maxSpeed:               Tells us what we will limit the cameras speed to</li>
       </ul>
 
-
+      <h3><a target="_blank" href="controls/LeapPaddleControls.js"> SEE SOURCE </a></h3>
     </div>
 
   </div>
@@ -1066,6 +1139,13 @@ controls.update();
       activateGUI( slideNum );
       activateControl( slideNum );
 
+      console.log( slides[ slideNum ] );
+
+      var new1 =  $( slides[slideNum]).find('h1')[0].innerHTML;
+      console.log( new1 );
+
+      console.log( $("#mainTitle") );
+      $("#mainTitle")[0].innerHTML = new1;
       for( var i = 0; i < slides.length; i++ ){
 
         if( i != slideNum ){
