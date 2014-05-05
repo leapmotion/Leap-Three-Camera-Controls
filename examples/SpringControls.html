@@ -47,6 +47,8 @@
         camera.position.z = 100;
         console.log( camera );
 
+
+
         /*
 
            Setting up controls
@@ -74,6 +76,11 @@
         controls.addHandMarker(     handMesh );
 
 
+        /*
+
+           Adding some cubes
+
+        */
         var material = new THREE.MeshNormalMaterial();
         var geometry = new THREE.BoxGeometry( 20 , 20 , 20 );
         
@@ -91,6 +98,41 @@
           scene.add( mesh );
 
         }
+
+        /*
+
+           Creating particles to help give people reference points 
+           when rotating
+
+        */
+
+        for( var i = 0; i < 10; i++ ){
+          
+          var geometry = new THREE.Geometry();
+
+          for( var j = 0; j < 1000; j++ ){
+
+            var x = (Math.random() - .5 ) * 2000;
+            var y = (Math.random() - .5 ) * 2000;
+            var z = (Math.random() - .5 ) * 2000;
+            geometry.vertices.push( new THREE.Vector3( x , y , z ) );
+
+          }
+
+          var r = Math.abs( Math.sin( i ) ) * .5 + .5;
+          var g = Math.abs( Math.cos( i )) * .5 + .5;
+          var b = Math.abs( Math.tan( i+1 )) * .5 + .5;
+          var color = new THREE.Color( r , g , b );
+          var material = new THREE.ParticleSystemMaterial({
+              size: 2,
+              color: color
+
+          });
+
+          var particleSystem = new THREE.ParticleSystem( geometry , material );
+
+          scene.add( particleSystem );
+        }
         
         container = document.getElementById( 'container' );
         renderer = new THREE.WebGLRenderer();
@@ -105,6 +147,8 @@
 
       function animate(){
 
+
+        // Don't forget to update your controls!
         controls.update();
         renderer.render( scene , camera );
 
