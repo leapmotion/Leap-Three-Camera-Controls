@@ -21,7 +21,7 @@
         margin:0px;
         font-family:"GeoSans";
         background:#000;
-        font-size:18px;
+        font-size:20px;
         overflow:hidden;
 
       }
@@ -283,12 +283,12 @@ user-select: none;
     <div class="slide" id="intro">
       <h1> Leap Three Camera Controls </h1>
       <p> 
-        Have you ever used Three.js? Have you ever wanted to see your work in 3D? 
+        Have you ever used three.js? Have you ever wanted to see your work in 3D? 
         Have you wondered how we got here, what the meaning of life is?
       </p>
       <p>
         If your answer was yes to any of these questions, than you are in the right place!
-        Here we are going to learn how to not only see things in 3D, but also make than move
+        Here we are going to learn how to not only see things in 3D, but also make them move
         with just the flick of our wrist, the wave of our hands.
       </p>
       <p>
@@ -302,8 +302,8 @@ user-select: none;
         </ul>
       </p>
       <p>
-        First we are going to quickly look at how to set up three.js project with the camera controls,
-        but if you are comfortable with three.js, feel free to skip to slide 8 , where we will begin looking 
+        First we are going to quickly look at how to set up a three.js project with the camera controls,
+        but if you are comfortable with three.js, feel free to skip to slide 8, where we will begin looking 
         at <code class="inline">LeapSpringControls</code>
       </p>
       <p> 
@@ -330,7 +330,7 @@ user-select: none;
       <p> 
         The first thing we will do is to include all the files we need. For the purpose of this
         walkthrough, we will be defining the paths as we would in our examples, but keep in mind
-        you will be having to define your own paths:
+        you will need to define your own paths:
       </p>
       <pre><code>
 &lt;script src = &quot;lib/three.min.js&quot;                   &gt;&lt;/script&gt;
@@ -339,7 +339,7 @@ user-select: none;
       </code></pre>
 
       <p>
-        Next Slide we'll get the Camera set up, and initialize our controller!
+        Next slide we'll get the camera set up, and initialize our controller!
       </p>
 
       <h3><a href="example.zip"> DOWNLOAD THE EXAMPLE SOURCE </a></h3>
@@ -349,9 +349,9 @@ user-select: none;
       <h1> Global Variables </h1>
 
       <p>
-        We will split the majority of our program into two parts: Initialization, and Animation.
-        The Animation will take care of updating and rendering things, and will be called every frame.
-        The initialization will set up everything we need to use in the animation step, however, the
+        We will split the majority of our program into two parts: initialization, and animation.
+        Animation will take care of updating and rendering things, and will be called every frame.
+        Initialization will set up everything we need to use in the animation step. However, the
         first thing that we need to do is create things that we will share between the two steps:
         <br/><br/>
         Global Variables!
@@ -380,11 +380,11 @@ var scene , camera , renderer;
         Now that we've got the global variables defined, we can initialize them. We will be going over
         the THREE.JS initialization pretty quickly, so if it doesn't make sense to you, make sure you
         check out <a href="http://aerotwist.com/tutorials/getting-started-with-three-js/"> 
-        A TUTORIAL </a>. 
+        Aerotwist's three.js tutorial</a>. 
       </p>
       <p>
-        All of our code will be inside an <code class="inline">init</code> function, where this function can be called 
-        wherever you want, but for this slide we are more concerned about whats INSIDE the function call
+        All of our code will be inside an <code class="inline">init</code> function. This function can be called 
+        wherever you want, but for this slide we are more concerned about what's INSIDE the function call
       </p>
 
       <pre><code>
@@ -429,8 +429,8 @@ function init(){
       </p>
       <p>
         Keep in mind that this is the example for only ONE of the many camera controls. In later slides, we
-        will get to see how the different controls work. and play with their parameters, but for eases sake
-        for this first example, we'll keep rolling with the <code class="inline">LeapTrackballControls</code>
+        will get to see how the different controls work. and play with their parameters, but for
+        this first example, we'll keep rolling with the <code class="inline">LeapTrackballControls</code>
       </p>
 
       <pre><code>
@@ -568,13 +568,15 @@ function animate(){
     <div class="slide" id="nowForTheFunStuff">
       <h1> Now For The Fun Stuff </h1>
       <p>
-        Congrats! You are now a graphics programmer! And a leap programmer! And super cool , and popular!
+        Congrats! You are now a graphics programmer! And a Leap programmer! And super cool , and popular!
         And you understand how to use the controls, so we can move onto describing each one in detail.
       </p>
       <p> 
-        Here's a really cool gif though, for your hard work up to this point!
+        Hopefully you don't look like this dude:
         <img src="img/coolGif.gif" />
+        but if you do, don't worry! now we get to actually start using the camera. 
       </p>
+
       <p> 
         Whenever you are ready, head to the next slide to learn about <code class="inline">LeapSpringControls</code>
       </p>
@@ -583,17 +585,18 @@ function animate(){
     <div class="slide" id="springControls">
       <h1> Spring Controls </h1>
       <p>
-        Spring controls Attatch a spring from your camera to a target, which it
+        Spring controls attatch a spring from your camera to a target, which it
         is always looking at. When you pinch, it places a new anchor that the 
-        target will tween to, always giving you a smooth movement. To see exactly
-        what this means, try adding markers to the anchor , hand , and target
-        as described in the below code snippet
+        target will tween to, always giving you a smooth movement, while the spring 
+        pulls the camera toward the target. To see exactly what this means, 
+        try adding markers to the anchor , hand , and target as described in
+        the below code snippet
       </p>
       <p>Pros:</p>
       <ul>
         <li>Smooth like butter</li>
         <li>Lets you fly to anywhere you want in the scene with relative ease</li>
-        <li>Once you let go, gives slowly brings you to a final resting point</li>
+        <li>Once you let go, slowly brings you to a final resting point</li>
       </ul>
       <p>Cons:</p>
       <ul>
@@ -642,12 +645,12 @@ controls.update();
       <ul>
         <li>dampening:      Tells us how quickly movement slows down </li>
         <li>size:           Tells us size of hand movements</li>
-        <li>springConstant: Tells us value for Hooke's Law constant k</li>
+        <li>springConstant: Tells us value for Hooke's Law constant 'k' , which defines 'springyness' </li>
         <li>mass:           Tells us mass of camera</li>
-        <li>anchorSpeed:    Tells us how fast Anchor tweens to target 
+        <li>anchorSpeed:    Tells us how fast anchor tweens to target 
                             ( .5 and higher gets weird. but it shouldn't,
                               I just forgot how to do physics. Pull request maybe ?!!???!? )</li>
-        <li>staticLength:   Tells us how far away camera comes to rest from target</li>
+        <li>staticLength:   Tells us how far away from the target that the camera comes to rest</li>
       </ul>
 
       <h3><a target="_blank" href="controls/LeapSpringControls.js"> SEE SOURCE </a></h3>
@@ -659,14 +662,14 @@ controls.update();
     <div class="slide" id="pointerControls">
       <h1>Pointer Controls</h1>
       <p>
-        The pointer controls basically has the camera always pointing at a 
+        The pointer controls always has the camera always pointing at a 
         'target', when you pinch, you begin moving the camera around the object,
         and when you release, the camera will stop moving.
       </p>
       <p>Pros:</p>
       <ul>
         <li>Always looking at the same place, so its hard to get out of control</li>
-        <li>movements feel smoothish</li>
+        <li>Movements feel smoothish</li>
         <li>Absolute positioning means that when comparing to the leap, 
           the position will always make sense</li>
       </ul>
@@ -730,19 +733,20 @@ controls.update();
       <h1> Leap Eye Look Controls </h1>
       
       <p>
-        Spring controls Attatch a spring from your camera to a target, which it
-        is always looking at. When you pinch, it places a new anchor that the 
-        target will tween to, always giving you a smooth movement. To see exactly
-        what this means, try adding markers to the anchor , hand , and target
-        as described in the below code snippet
+        Eye Look Controls are very similar to the Pointer controls. 
+        Infact when you use your right hand, they are exactly the same. 
+        The biggest difference is that when you use your left hand, you 
+        dynamically move the target. This leads to the ability to easily
+        move around a scene, but always have a specific point you are focused on.
+        Also, all movements are relative, rather than absolute.
       </p>
 
       <p>Pros:</p>
       
       <ul>
-        <li>Smooth like butter</li>
-        <li>Lets you fly to anywhere you want in the scene with relative ease</li>
-        <li>Once you let go, gives slowly brings you to a final resting point</li>
+        <li>Always looking at the same place, so its hard to get out of control </li>
+        <li>Movements feel smoothish</li>
+        <li>Relative movements allow for the exploration of the entire scene</li>
       </ul>
       
       <p>Cons:</p>
@@ -750,14 +754,15 @@ controls.update();
       <ul>
         <li>Moving camera near poles results in some weirdness...</li>
         <li>Uses pinch, which removes the ability to use it for other gestures</li>
-        <li>Easy to get lost in space if you have no reference points</li>
+        <li>Relative movement means that you can get very far away from your target, leading to depth being difficult to judge</li>
+        <li>Difficult to move through an entire scene quickly</li>
       </ul>
       
       <p>Pairings:</p>
       
       <ul>
-        <li>Space Flying Games </li>
-        <li>Plane Flying Games</li>
+        <li>Slowly examining a full scene </li>
+        <li>3D Modeling camera controls</li>
         <li>A quick addition to visual experiments</li>
       </ul>
       
@@ -766,26 +771,27 @@ controls.update();
 &lt;script src=&quot;path/to/controls/LeapEyeLookControls.js&quot;&gt;&lt;/script&gt;
 
 // Inside Init Function
-controls = new THREE.LeapSpringControls( camera , controller , scene );
+var controls = THREE.LeapEyeLookControls( camera , controller , scene );
 
-controls.dampening      = .75;
-controls.size           = 120;
-controls.springConstant =   1;
-controls.mass           = 100;
-controls.anchorSpeed    =  .1;
-controls.staticLength   = 100;
+controls.lookSize       = 10;
+controls.lookMass       = 10;
+controls.lookSpeed      = 10;
+controls.lookDampening  = .9;
 
-// Adding meshes to the Anchor , Target and Hand
-var geo = new THREE.IcosahedronGeometry( 5, 2 ); 
-var mat = new THREE.MeshNormalMaterial(); 
+controls.eyeSize        = 10;
+controls.eyeMass        = 10;
+controls.eyeSpeed       = 10;
+controls.eyeDampening   = .9;
 
-var targetMesh  = new THREE.Mesh( geo , mat );
-var anchorMesh  = new THREE.Mesh( geo , mat );
-var handMesh    = new THREE.Mesh( geo , mat );
+// If you want to have a marker for your eye
+// Which you probably do...
 
-controls.addTargetMarker( targetMesh );
-controls.addAnchorMarker( anchorMesh );
-controls.addHandMarker(     handMesh );
+var geo   = new THREE.CubeGeometry( 1 , 1 , 1 );
+var mat   = new THREE.MeshNormalMaterial();
+var mesh  = new THREE.Mesh( geo , mat );
+
+controls.addLookMarker( mesh );
+
 
 // Inside Animate Function
 controls.update();
@@ -794,14 +800,14 @@ controls.update();
       <p>Using the following parameters:</p>
       
       <ul>
-        <li>dampening:      Tells us how quickly movement slows down </li>
-        <li>size:           Tells us size of hand movements</li>
-        <li>springConstant: Tells us value for Hooke's Law constant k</li>
-        <li>mass:           Tells us mass of camera</li>
-        <li>anchorSpeed:    Tells us how fast Anchor tweens to target 
-                            ( .5 and higher gets weird. but it shouldn't,
-                              I just forgot how to do physics. Pull request maybe ?!!???!? )</li>
-        <li>staticLength:   Tells us how far away camera comes to rest from target</li>
+        <li>lookSize: Tells us how big the movements will be for the look object by adding bigger or smaller numbers to the force </li>
+        <li>lookMass: Tells us more about how the look object will move by giving it different mass. A smaller mass with fling around the field while a larger mass will be slower / harder to move</li>
+        <li>lookSpeed: Tells us how much the speed will be multiplied by when we determine the final speed to be added to the position</li>
+        <li>lookDampening: Tells us how quickly the look object will slow down</li>
+        <li>eyeSize: Tells us how big the movements will be for the eye object by adding bigger or smaller numbers to the force</li>
+        <li>eyeMass: Tells us more about how the eye object will move by giving it different mass. A smaller mass with fling around the field while a larger mass will be slower / harder to move</li>
+        <li>eyeSpeed: Tells us how much the speed will be multiplied by when we determine the final speed to be added to the position</li>
+        <li>eyeDampening: Tells us how quickly the eye object will slow down</li>
       </ul>
 
       <h3><a target="_blank" href="controls/LeapEyeLookControls.js"> SEE SOURCE </a></h3>
@@ -813,13 +819,13 @@ controls.update();
       hand, and rotate scene when you pinch with two hands</p>
       <p>Pros:</p>
       <ul>
-      <li>You feel a bit like iron man</li>
+      <li>You feel a bit like Iron Man</li>
       <li>You don't accidentally rotate the scene when you don't want to </li>
-      <li>Once you let go, gives slowly brings you to a final resting point</li>
+      <li>Once you let go, slowly brings you to a final resting point</li>
       </ul>
       <p>Cons:</p>
       <ul>
-      <li>Sometimes difficult for tracking to pick up with two hands in the field</li>
+      <li>Sometimes difficult for tracking to pick up two hands in the field</li>
       <li>Uses pinch, which removes the ability to use it for other gestures</li>
       <li>Using two hands might be more tiring</li>
       </ul>
@@ -859,7 +865,7 @@ controls.update();
 
     <div class="slide" id="pinchRotateControls">
       <h1> Pinch Rotate Controls </h1>
-      <p>Pinch Rotate Controls are nearly Identical to the Trackball controls, except that they use pinch in order to move the camera. As well, they have the ability to zoom in and out, by simply pinching and moving inwards or outwards. In order to define when this happens, it looks at the movement in Z vs the movement in X and Y, and compares the too to see if there is more movement in Z than XY or vis versa</p>
+      <p>Pinch Rotate Controls are nearly Identical to the Trackball controls, ( described next slide ) , except that they use pinch in order to move the camera. As well, they have the ability to zoom in and out, by simply pinching and moving inwards or outwards. In order to define when this happens, it looks at the movement in Z vs the movement in X and Y, and compares the two to see if there is more movement in Z than XY or vice versa</p>
       <p>Pros:</p>
       <ul>
       <li>Supersmooth. </li>
@@ -991,7 +997,7 @@ controls.update();
 
     <div class="slide" id="paddleControls">
       <h1> Paddle Controls </h1>
-      <p>Paddle Controls Let you 'Paddle' Around a scene, the way that you would paddle 
+      <p>Paddle Controls Let you 'paddle' Around a scene, the way that you would paddle 
       through water. Pretty cool huh?</p>
       <p>Pros:</p>
       <ul>
